@@ -1,0 +1,913 @@
+<title>Derimod AI Görünürlük Raporu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=Outfit:wght@300;400;500;600;700&display=swap">
+<style>
+/* Layout: tek sütunlu rapor; koyu teal kapak, açık zemin üzerinde beyaz kartlar, mercan vurgu (Inbound rapor sistemi) */
+:root{
+  color-scheme: light;
+  --coral:#FF7B52; --coral-tint:#FFE3D8; --coral-deep:#E85F36; --coral-soft:#FFB399;
+  --teal:#10332F; --teal-soft:#1A4238; --teal-deep:#0B221E; --mint:#E8F5E9;
+  --ink:#10332F; --ink-2:#4A4A4A; --ink-3:#7E7B76;
+  --line:#E6E1DA; --line-soft:#F0EDE8; --surface:#FFFFFF; --bg:#FAF8F5;
+  --green:#2E7D32; --green-wash:#DCEFDD; --red:#C4452B; --red-wash:#FBE1DA;
+  --gold:#F5A623; --gray-bar:#4A4A4A; --track:#EFEBE5;
+  --c-gpt:#10332F; --c-gem:#F5A623; --c-aio:#FF7B52;
+  --on-dark:#FFFFFF; --on-dark-2:rgba(255,255,255,.78); --on-dark-3:rgba(255,255,255,.55);
+  --font-display:'Bricolage Grotesque','Calibri',system-ui,sans-serif;
+  --font-body:'Outfit','Calibri',system-ui,sans-serif;
+  --r-sm:8px; --r-md:12px; --r-lg:16px; --r-pill:999px;
+  --shadow-card:0 2px 8px rgba(16,51,47,.07);
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1040px;margin:0 auto;padding-inline:20px;padding-block:24px 64px}
+h1,h2,h3{font-family:var(--font-display);color:var(--ink);text-wrap:balance;margin:0}
+p{margin:0}
+b,strong{font-weight:600}
+.num{font-variant-numeric:tabular-nums}
+
+/* Kapak */
+.hero{background:radial-gradient(120% 140% at 100% 0%,#23544a 0%,var(--teal) 45%,var(--teal-deep) 100%);color:var(--on-dark);border-radius:var(--r-lg);padding:36px clamp(20px,4vw,48px) 40px;display:grid;gap:22px;position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;inset:auto 0 0 0;height:4px;background:var(--coral)}
+.brandline{display:flex;align-items:center;gap:16px;flex-wrap:wrap;font-weight:600;letter-spacing:.12em;font-size:12.5px;text-transform:uppercase;color:var(--on-dark-2)}
+.brandline img{height:26px;width:auto;display:block}
+.brandline .sep{width:1px;height:22px;background:var(--on-dark-3)}
+.hero h1{color:var(--on-dark);font-size:clamp(30px,5vw,46px);line-height:1.08;font-weight:700;letter-spacing:-.01em}
+.hero h1 em{font-style:normal;color:var(--coral-soft)}
+.hero .lead{color:var(--on-dark-2);font-size:17px;max-width:62ch}
+.hero .lead b{color:var(--on-dark)}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.kpi{background:var(--surface);color:var(--ink);border-radius:var(--r-md);padding:16px 14px;text-align:center;display:grid;gap:4px;align-content:start}
+.kpi .v{font-family:var(--font-display);font-weight:700;font-size:34px;line-height:1.05}
+.kpi .v small{font-size:.5em;font-weight:600;margin-left:1px}
+.kpi .l{font-size:13px;color:var(--ink-2);line-height:1.3}
+.kpi .chip{justify-self:center;margin-top:6px}
+.kpi.green .v{color:var(--green)}
+.pills{display:flex;flex-wrap:wrap;gap:8px}
+.pill{border:1px solid rgba(255,255,255,.28);color:var(--on-dark);border-radius:var(--r-pill);padding:6px 12px;font-size:13px;font-weight:500}
+.chip{display:inline-block;border-radius:var(--r-pill);padding:3px 10px;font-size:12px;font-weight:600;background:var(--coral-tint);color:var(--coral-deep);white-space:nowrap}
+.chip.green{background:var(--green-wash);color:var(--green)}
+.chip.red{background:var(--red-wash);color:var(--red)}
+.chip.gray{background:var(--line-soft);color:var(--ink-2)}
+.chip.teal{background:var(--teal);color:var(--on-dark)}
+
+/* Bölümler */
+section.block{margin-top:56px;display:grid;gap:18px}
+.eyebrow{display:grid;gap:8px;color:var(--coral-deep);font-weight:600;font-size:13px;letter-spacing:.02em}
+.eyebrow::after{content:"";width:40px;height:4px;border-radius:2px;background:var(--coral)}
+section.block > h2{font-size:clamp(24px,3.4vw,30px);font-weight:700;line-height:1.15}
+.intro{font-size:16.5px;color:var(--ink-2);max-width:75ch}
+.intro b{color:var(--ink)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:22px clamp(16px,2.6vw,26px);box-shadow:var(--shadow-card);display:grid;gap:14px;min-width:0}
+.card-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.card-head h3{font-size:19px;font-weight:700}
+.meta{font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+.howto{background:var(--line-soft);border-radius:var(--r-md);padding:14px 16px;font-size:15px;color:var(--ink-2);display:grid;gap:6px}
+.howto b{color:var(--ink)}
+.howto .t{font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:var(--coral-deep)}
+.notes{margin:0;padding:12px 0 0;border-top:1px solid var(--line-soft);list-style:none;display:grid;gap:6px;font-size:14px;color:var(--ink-2)}
+.notes li{padding-left:16px;position:relative}
+.notes li::before{content:"";position:absolute;left:0;top:.62em;width:6px;height:6px;border-radius:50%;background:var(--coral)}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+
+/* Sözlük */
+.gloss-group{display:grid;gap:10px}
+.gloss-group > .meta{padding-left:2px}
+.gcard{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:18px;display:grid;gap:6px;align-content:start;min-width:0}
+.gcard .name{font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:var(--ink-3)}
+.gcard .val{font-family:var(--font-display);font-size:30px;font-weight:700;line-height:1.1}
+.gcard .val span{font-family:var(--font-body);font-size:13px;font-weight:500;color:var(--ink-3);margin-left:6px}
+.gcard p{font-size:14.5px;color:var(--ink-2)}
+.concepts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.concept{border-left:3px solid var(--coral);background:var(--surface);border-radius:0 var(--r-md) var(--r-md) 0;padding:12px 16px;font-size:14.5px;color:var(--ink-2)}
+.concept b{color:var(--ink);display:block;margin-bottom:2px;font-size:15px}
+
+/* Metodoloji */
+.method{margin:0;padding:0;list-style:none;display:grid;gap:10px}
+.method li{display:grid;grid-template-columns:28px minmax(0,1fr);gap:10px;font-size:15px;color:var(--ink-2)}
+.method li span{font-family:var(--font-display);font-weight:700;color:var(--coral-deep)}
+.method li b{color:var(--ink)}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);padding:14px;text-align:center;display:grid;gap:2px}
+.stat .v{font-family:var(--font-display);font-weight:700;font-size:26px}
+.stat .l{font-size:13px;color:var(--ink-2);line-height:1.3}
+
+/* Bulgular */
+.findings-lead{background:var(--teal);color:var(--on-dark);border-radius:var(--r-lg);padding:18px 22px;font-size:16px;line-height:1.55}
+.findings-lead b{color:var(--coral-soft)}
+.finding{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:20px;display:grid;gap:10px;align-content:start;min-width:0}
+.finding .tag{font-size:11.5px;letter-spacing:.14em;font-weight:700;color:var(--coral-deep)}
+.finding h3{font-size:18px;font-weight:700;line-height:1.25}
+.finding ul{margin:0;padding:0;list-style:none;display:grid;gap:5px;font-size:14.5px;color:var(--ink-2)}
+.finding ul li{padding-left:16px;position:relative}
+.finding ul li::before{content:"";position:absolute;left:0;top:.62em;width:6px;height:6px;border-radius:50%;background:var(--coral)}
+.finding ul b{color:var(--ink)}
+.finding .means{border-top:1px solid var(--line-soft);padding-top:10px;font-size:14.5px;color:var(--ink)}
+.finding .means i{font-style:normal;font-weight:700;color:var(--teal-soft);margin-right:4px}
+
+/* Tablolar */
+.tbl-wrap{overflow-x:auto;margin-inline:-4px;padding-inline:4px}
+table{width:100%;border-collapse:collapse;font-size:14.5px;font-variant-numeric:tabular-nums}
+th{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);font-weight:700;text-align:right;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:bottom;white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+th.l,td.l{text-align:left}
+td{padding:11px 10px;border-bottom:1px solid var(--line-soft);text-align:right;vertical-align:middle}
+tr.own td{background:#FFF1EB}
+tr.own td:first-child{font-weight:700;color:var(--coral-deep);border-radius:var(--r-sm) 0 0 var(--r-sm)}
+tr.own td:last-child{border-radius:0 var(--r-sm) var(--r-sm) 0}
+tr.total td{font-weight:700;border-top:1px solid var(--line)}
+.barcell{display:flex;align-items:center;gap:10px;justify-content:flex-end}
+.bar{width:96px;height:8px;border-radius:4px;background:var(--track);overflow:hidden;flex:none}
+.bar i{display:block;height:100%;background:var(--gray-bar);border-radius:4px}
+tr.own .bar i{background:var(--coral)}
+.barcell b{min-width:52px;text-align:right}
+.src{display:inline-block;background:var(--line-soft);border-radius:var(--r-pill);padding:2px 9px;font-size:12.5px;color:var(--ink-2);white-space:nowrap}
+.src.own{background:var(--coral-tint);color:var(--coral-deep);font-weight:600}
+.q{font-weight:500;color:var(--ink);min-width:220px}
+.tp{font-size:12px;font-weight:600;border-radius:var(--r-pill);padding:2px 9px;white-space:nowrap}
+.tp.b{background:var(--green-wash);color:var(--green)}
+.tp.u{background:#E3ECF7;color:#2F5C8F}
+
+/* Çubuk grafikler */
+.hbars{display:grid;gap:10px}
+.hbar{display:grid;grid-template-columns:120px minmax(0,1fr) 64px;gap:12px;align-items:center;font-size:14px}
+.hbar .name{font-weight:600;color:var(--ink)}
+.hbar .track{height:12px;background:var(--track);border-radius:6px;overflow:hidden}
+.hbar .track i{display:block;height:100%;border-radius:6px}
+.hbar .val{text-align:right;font-weight:700;font-variant-numeric:tabular-nums}
+.pair{display:grid;gap:5px}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:13px;color:var(--ink-2)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:10px;height:10px;border-radius:50%;display:inline-block}
+
+/* Dikey çubuk (sıra dağılımı) */
+.cols{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:6px;align-items:end;height:170px;padding-top:18px}
+.col{display:grid;grid-template-rows:auto 1fr;align-items:end;height:100%;text-align:center;font-size:12px;font-weight:600;font-variant-numeric:tabular-nums}
+.col .n{color:var(--ink);margin-bottom:4px}
+.col .b{background:var(--teal);border-radius:4px 4px 0 0;min-height:2px}
+.col.top .b{background:var(--coral)}
+.axis{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:6px;text-align:center;font-size:12px;color:var(--ink-3);border-top:1px solid var(--line);padding-top:6px}
+.dist{display:grid;gap:8px}
+.dist h4{margin:0;font-family:var(--font-display);font-size:16px}
+.dist .sum{font-size:13.5px;color:var(--ink-2)}
+
+/* Değişim */
+.delta{font-weight:700;font-size:13px;white-space:nowrap}
+.delta.up{color:var(--green)}
+.delta.down{color:var(--red)}
+.delta.flat{color:var(--ink-3)}
+
+/* Sentiment */
+.sent{display:grid;grid-template-columns:170px minmax(0,1fr);gap:24px;align-items:center}
+.donut{width:160px;height:160px;border-radius:50%;background:conic-gradient(var(--green) 0 16.8%,var(--gold) 16.8% 99.5%,var(--red) 99.5% 100%);display:grid;place-items:center}
+.donut div{width:112px;height:112px;border-radius:50%;background:var(--surface);display:grid;place-items:center;text-align:center;line-height:1.1}
+.donut b{font-family:var(--font-display);font-size:30px}
+.donut span{font-size:12px;color:var(--ink-3)}
+.stack{display:flex;height:16px;border-radius:8px;overflow:hidden;background:var(--track)}
+.stack i{display:block;height:100%}
+
+/* Kaynak tipleri */
+.stackbar{display:flex;height:34px;border-radius:var(--r-md);overflow:hidden}
+.stackbar i{display:block;height:100%}
+.typelist{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 24px;font-size:14px}
+.typelist div{display:grid;grid-template-columns:12px minmax(0,1fr) auto;gap:10px;align-items:center;padding:6px 0;border-bottom:1px solid var(--line-soft)}
+.typelist i{width:12px;height:12px;border-radius:3px}
+.typelist b{font-variant-numeric:tabular-nums}
+.typelist small{display:block;color:var(--ink-3);font-size:12.5px}
+
+/* AIO */
+.aio-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.aio-cards .stat.hl{border:2px solid var(--coral)}
+.qlist{display:grid;gap:10px}
+.qitem{display:grid;gap:6px;padding:12px 0;border-bottom:1px solid var(--line-soft)}
+.qitem:last-child{border-bottom:0}
+.qitem .qq{font-weight:600}
+.qitem .w{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:12.5px;color:var(--ink-3)}
+
+/* Görünmeyen sorular */
+.theme{display:grid;gap:8px;align-content:start}
+.theme h4{margin:0;font-family:var(--font-display);font-size:16.5px}
+.theme p{font-size:14px;color:var(--ink-2)}
+.theme ul{margin:0;padding:0;list-style:none;display:grid;gap:4px;font-size:14px}
+.theme ul li{padding:6px 10px;background:var(--line-soft);border-radius:var(--r-sm)}
+.theme.muted ul li{background:transparent;border:1px dashed var(--line);color:var(--ink-3)}
+
+/* Aksiyonlar */
+.actions{display:grid;gap:12px}
+.action{display:grid;grid-template-columns:110px minmax(0,1fr);gap:16px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:18px 20px}
+.action .sev{align-self:start}
+.action h4{margin:0 0 4px;font-family:var(--font-display);font-size:17px}
+.action p{font-size:14.5px;color:var(--ink-2)}
+.action p + p{margin-top:6px}
+.action .why{font-size:13.5px;color:var(--ink-3)}
+.sev{display:inline-block;border-radius:var(--r-pill);padding:4px 11px;font-size:12px;font-weight:700;text-align:center}
+.sev.p1{background:var(--coral);color:var(--on-dark)}
+.sev.p2{background:var(--coral-tint);color:var(--coral-deep)}
+.sev.p3{background:var(--line-soft);color:var(--ink-2)}
+.subhead{font-family:var(--font-display);font-size:18px;font-weight:700;margin-top:6px}
+
+/* Terim ipucu */
+.term{border-bottom:1px dotted var(--coral-deep);cursor:help;position:relative;font-weight:600}
+.term:hover::after,.term:focus::after{content:attr(data-tip);position:absolute;left:0;top:calc(100% + 6px);width:min(280px,70vw);background:var(--teal);color:var(--on-dark);font-size:13px;font-weight:400;line-height:1.4;padding:9px 11px;border-radius:var(--r-sm);z-index:5;box-shadow:0 8px 24px rgba(16,51,47,.2)}
+.term:focus{outline:2px solid var(--coral);outline-offset:2px}
+
+/* Kapanış */
+.foot{margin-top:56px;background:var(--teal);color:var(--on-dark-2);border-radius:var(--r-lg);padding:28px clamp(20px,4vw,40px);display:grid;gap:12px}
+.foot h3{color:var(--on-dark);font-size:20px}
+.foot img{height:24px;width:auto}
+.foot small{color:var(--on-dark-3)}
+
+@media (max-width:820px){
+  .kpis,.stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .grid3,.aio-cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:620px){
+  .grid2,.grid3,.concepts,.typelist,.aio-cards{grid-template-columns:minmax(0,1fr)}
+  .sent{grid-template-columns:minmax(0,1fr);justify-items:center}
+  .action{grid-template-columns:minmax(0,1fr);gap:8px}
+  .hbar{grid-template-columns:90px minmax(0,1fr) 56px}
+  .bar{width:56px}
+  .kpi .v{font-size:28px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+
+<header class="hero">
+  <div class="brandline"><span>30 Ağu - 29 Eyl 2026</span><span class="sep"></span><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAR8AAABACAYAAAAj+HPbAAAVjklEQVR42u2deXBd1X3HP0+WJe+rJG/CkhfwhjG2IQsBmyYEDIZAWMISoE0KuG0603SbttNOp53+0+lkOp22w5SlHUhYAqEkLDEhMU5jg1lsx9iAMd4ky9hgS8a25E2Spdc/ft/Lu35+99633KvFOt+ZO3p67777zj33d77nt53fSaXTaRwcHPJGyrUhsB3ZZFIW9nmZkyUHB4feIMiyLFYKOjYD9/bjjvhL4P2Q+3vHyYpDwIBJZR3ZskOO2T3s83zPKaUNSfVNWDvKgWuBN4Eu4DTQmXWsAm71vl/u5M3Boc+YMQMKzuxycMTj0Ct96cjHwQ0Wh17pR2d2ObgBE/5+lE8lXcRALHSwpov4PG5iTedxL+k8r5N2mo+DIx6HXuvHfDWfXwIbXF87ONJxiKsv8yWfw8Ax198OjnhcP8Z1oSjy6QQ+BHYDba7fHQbggInyARX6eVzXKPU3kujH2KJdncAh4ElgnbQfBwen8bh+TFzzacMyfx8DDrq+d3ADxqEnyGcL8AzwY2k/Dg6OdBwSI59t+vsu8FtgKzAImK73WwJMr5HAxIjf2QecyLNNNcBonb+vn/RjJVDn+/8z9VdfRw0wJuu9T+gZ/955wNCAzw6VMOmlstwKdREa/hGgOcf7Q4HaHO/7fSmfkn8gZjwwDmgH9vQhGRgtOfCwHzjem5pPjY4rfYNpNfB2jnMvAO4IuE63Huz/Ag0B54wDzgeqgGoJ5SiRT5O+36VOaZCw9AXMAuaozZVAfdbgaVG7W4DtwMf0XsRwnNo4Vs+rSoO0Ru+RJXxtwFFgl97bAbTGKHPjgduAyQHnvA28JrkrReMZji2IHhFCPOuAX+f4bCpwX8hvtQAvYwuWc2GUZMST61o9h1M+ue6US2NX1r3GnYTonTMOmKb/Z6t/cpHPJ5LX7T5izieRMV0s+czO+ptthu0LIJ8Lgb8IuH4Hlh/0Rg7yGaeHshC4Tr87Vx3ioVMamHedX2Ir7FvEzt29oOHUaPDcBNwMzA85v0Ptfwn4jR7moQK0wFJQJq20CligNk8Hlos0oyKdTcArev2K7uMYtlq5uYR2VYgAvwvMCzjnCWnin5VAPIh0/gCYEPCdbSLaXOQzHfjzkN/boHGRTT5j1efzgBvU13M1yP34QHKwFfg5sElyfUyTVtyTTzVwMfA7eu+bei/IUnlT7foQaBRRd/aE5tMTuEGC8aWQcwZr4ABcCtwCrAUeEhG29nCbZwAPqN2VeQ60i3XcpUH8Qwlu0qUQRgOXqb2XaUAUgqnACr1egZVDeF0D5CGRkPPxnI2r1F9fizhvnk+uvyF5fljyHbefdbnadFme50/BSl/cqv//DHgubjdIb5DPcN3UA9KaCsEYMfd84GngWc0cSWOmhOk64ItF9tsUmRqLNbM/RzJRxHr10TXAIpHOiBiue6lm8RYRZ1Lt76/EUy5N+H7gkgK/O0KT8Ezgp8BPiGdFwXC16YEIDT0K35cJ+Yw0+H5JPjOAO7GiQxeq0w8DB/R5HcFOSE+TGKfjdgnec8B7CQp2PfD7mtGmyXwpBkN0jJLWlJZa2xRje6cCvwcsU19XxXjt0TrGyWT6slTztQn2f38gnRQwCfi2+v1i9VObT1OojZgABmtiHSNzyMu/W1/CvU6Ttr1MY21kiXJ1rZ79eZo8c/l4Un2VfIbLv3OnbN118h3szyKfCRrwM0JsUs839U1dIwnhr5C2cq80tZkxXXeoNJK75LN6JQYCGiY1fpm0q7kJPseh0t4Wazatkm/rowFqZg1V338H80NukHb4icgnJfKZqEE8U3JdFqJlX69JeX2RbTofuBH4XY2lOMb5VE2cVWrb2lLdHj1JPrM0W3YDj2POuq2cHZKeikXZrpWA14kIcmG+rvlj4g9tj5Gp9cc+DaJDxHlcf0/ovUEiAO97oyM0OIDLNXN0S9VuKYF45krdv0WzU09hgWSoC3hUE0H3ACIez8xdIq32cZHPVpGPv72T9cyvl1zXh8jILOAKLLhRqGk7Vu6B+/OcMNtEImngJBmH9yBpax5RVkq2vwD8PfCnWErOqf5APjfID/GQjiDPeRPmlP2ZHsAj0obKIjSgR2Jub620Hi/61o1FXzZKwDbo9Sd6SIt13k2Yg28G0SVLrpAApjV4i8EcCdr9vTT45mHOzLSe66EBRDzIv3Y35ix+mOBlSPsxH+VLkpWHRDJBMlIn7fi/sNygfHGVxtr5Eed5k8T7wKtYAGGjjkMiscvlLxoieT5P4+ES4B5Nwpv7Ovn8ERZm/mvMq59PyO4Ytrzjcfl3poXMEner0z4o8EERolHdLvvd07o2SMN6KUvzQf9v1OtdWP7HdViUIAqzRVjFkM/l8jXc1MsDsEbk1405JRsGCPHcA+zENih4PcAMyfaLnMTC6k/JBTE3hHy+gyX9biQ6Ryyla91Kfg7vn2L5d5tyaD7ovTVYqD0FLNWY+Kpvku2S/+etgHvtM5rPdj2gI3me3y0Gfkoq4DdENLl8SVPlR2mIgXwmyNy6UVpJAxZ9eEPqdEOAgB3zkeZhqcuNEtDZIQ6/EVKPl2ORhHwTEc8TwS3jzCSxfNEYojKPJTg3Jhcq1Z675OdojVED6utLJRqB/yvgftOarJ6TXN8MXBTgS5qC+Um35yEXg2XSXSTfTBCOilQeE2kE5VJ16dyj+v+Ezv1Yk32NZG+3j3z6pOazSx14pMDvdWPO5F9pAM8K6fjJ+lsqFsrnVCfB+pGOQmbz42r3ds0m98o/EiQU1VgEaUsB5DPL5zsIgpcQ2KK/zT6zoCmCfDxbv9p3VBEc7RskjfEq9dXrA4B49mCJisUQ7UdYcuMFAeTj9elEonPKKuQm+DoWeQtCC5l8oiBNLQj7NA5bMJ/mUlkji2TiNfY18klJM2mUzVssdvsceLlQpt8pVViHyXm4UIN0FfAfFF9OpF3mVIWuvTjgvHHSfP5dBHEq4l6rsXyjXMsTTojkW8lkhm/VINlaIImWyaczx3dc4COjXIPiMqnyGyjBGdkPMEwy3VQieTXlMX4GRVxnlMhgbsgEd1KT22PAyiLb2yby+ifJ7CIsjH+DxkmfIh9vNmwhE04vVnPaL02oLMD0WkQm4lQs5oogamVn/4h4Ftk9qBlsIcEOxkFYmPwzwlMHxmB5Rw/I3Mx2IO6WPf+aj3yKTYv3NM/3sohyBZblXesjKQ8zsYTE1+id/J+ewmzJxsdFaGtpH/nsDZHrCmlFIyP8SBOx/K4wc+tjbHnS8wHXyLegWbsmlyc13rzlUQWTT9IF5E9LAI/EcK1PySx0zDULLSY6vB2FWzR4tmDO5c0awHFgozSpsGeRTz7RaMwROSFHX/8j8IdYhGSj7qMz5md6BPgf+Re+H2BeXSR/wLmMbcST3tFMcI6UtzwnLEGwWrK/IMI8e4sYs5M1wT2KJZpOwnKKCsqk7wmfz3HiWSjXEaLGl+sBDSrh+iksStCtWfsl4i0tsF7kc3UI+UzA8pa2YVGGbEyST6XWJ2iHsYjIE1jiVxPxRPzCtKEDOo5o4Lwstf8Kzb5TdR/TNLt3n4PkcyImYu+USRSkDY+MGKcXYCksYVpPkzTgbTHef4sUgjaZ/xMKHS9u3y7DYCyyMJmMI3BHzL+xH0vKeo/wVeXT1JZc5DNWNransTZq5nlRmlpPY6+Od9Rfg2RyjZdZcjWWKnHKiVhiqBEBEaH1bCb+hdiNIrWR0rw+7ktmV3/BED3ASmzZx6aEfme3SKIzoi2VIZ9VS0trlg3/YC8RT7Yp9qLMsQ1YeHYilq4wbIDLVjrHkfIdxVzH+26lTJ2gPu4S4fxKWk9QG1IBlkBUO7dg6xN3SPsamsc9fH4vjnzO7pwGSovMhaEBS8I7HWKKTCN3BT3ILMwdjGWAP0w8Ie24zLGfqE1vyze1wGnXiaJeroLZAZ+3S+PZSHIVCNIUWR7GkY+hCosgfUryu3R40YJjIeSTK4Q+mUxJW4AXAkyz3sZqaUE7RTy5ojUOPYNOkU+SFTQPYvls5cBXKKCSgiMfQwXmzO0k/uhQoeQzLMDsmixiapOqu5OeqYhYjAn2DuY386opludQ6R1KxwTCs9s7SMbX40ezzK6UtN0KRz7FqY8HSd452oVFisJIbgRnr04fhTmcj8q3cqAP9+VOmV5eBK9iAJNOKseR7QMq9DoexhAe5fJkrb2INuTTRm+pyD4sCfh0Hvfw+b2U9eAD6Mso04AvtG5wUhiHRbyycVrC9HP6TiH9XDhMZvlGvfrWaTvxo5Lw3J5uMnW3k8RJLAfvdCFc4DSfjKaxCMtJSXqfskJnvOxB/UE/6dNWLBpy2olXYqgjODgBGZ/P8b7YeEc+Z2I2xZdJzRftRQrEJILLijgMTOyhwNyahLnkPApIrXDkc6Y6OJzkQ8PlWA5MRYHfO9bHTa1sDMeicy7UnuxE1t5H2pLG/JGdhQwEB3uAB0k+0lUK+bTJtp7ST4h8iO7TTXC5+yfX6yS0kYnSsjtC2hDVxqhzUj5TO2oMpZ3mczb57CC+RaRRDyxqHVo7Z6/3aRdxzSS+2kVJ3V+uaJ1DzyNoVXzc8Oo9F0SkjnwybJzuod+qxDJ/w1YAH8DC1X5420WPwQqPTeiD/egJ3wJsA4B09mzn0KNyW4mtih+VcDu8tV0VhTxrRz6GE9jK8OuJLrwdB/kspPiN/EaLfJYQ775ccZoSC7CSGiex1fb7nIglAq8eUG+iClsX2Y05v/NOfHXkY/DyIcZjeSnVCf3OCGx91iiC/W37yL0Xegu24r5JWs/yHiDKYojHqytdRab8RocTsV4hn6FYZYFxJJNkiIjnq3rWe4mO4ro8nywcx8pdnCBT0iIJTNKDCvP3bCJ33ZU2LIu0WcLwFRHQ/F4mnZSIdDJWeP8ebG+nI1hKgcvzSQ6tPpkI07IXJzihepsh7sdy5PJ+3o58DEexglhtWK2d6Qn9zlSZduUR5BO0//xJLCqXxhLMvo2Vz5wvbai8h4kH/eYUbHeRv8KKndVoULxA31x/di7BW9gZhi8lJNMV0ubLsHIxBRUNdORzNr6mh5UExoooiiWJBmzjOW92qcf2BlsJ3Ic5o3vazKrGnMsPinjG+2Zll+GcPMLKsCaNemlVFxTzZZfnk0E3tonaECw8uRxbQxUXbiR8V9EuaTwbCXbQHiazY+rFZEKo1WQ27WvBnOfrE+qnlM/WXyYz8qIc2tszJZDPRCyl4P0S2jmyRKLva0gHkP/7WMnf74Z8d7lkowLbsyv7GlETTNDvL9VEvR+rWNlFdLQr7cgnN56Tv2IRttdWhx5WqVmkk7GaxosjyG+lZrEgB+1prObQszJ1Rvps+1ps075TIrF12GK/tcSTBTtex3As0nYJVtK1ThqdH5s1IHKZXB0yE8KqB0wgv33Gw9COObu7z3GZPan+XKnnkiuKWi2ttMlHPqVOPpfLShiPlVB5QxOi03yKhKd5XIRtHHgaCx/uLmEA12Bbyy4hfN1YN7a7QFRY+jjwC/mOanzCNkhk4KnD89Tu2ZqZmskUPW8hkw6fTRBjyJTDLMd8YBWYI76OzN5m9WT2sfdjlzSzXSEaXlRJkUkxkE+lSGwguBaOifC/SHAKx1QRxuUUX/3Sy1yfg/kbvyBZWqNn2uXIpzSsVufepgH+LuY4baCw5RcVMh+WYHtsLYiYvXZqBmuLuG6nzl0lMpvH2bVzq3Qs1n1sF7EekMbxochuD2dv/1LvI8kh2HZCw8gU2A8jzxMixnfy6J8WDZpcg6VK5FPtI8pC5boW28Bw8ACQ2Q5NWvslC0GLOxcAfyI5aJGsdRVIPLNk4t8kzXs1ttuL8/nEgN/4Bu0I4J81ez5FYQldU7DN9VYQnWHaCHyP8F1Zs/EDaWYrCK7h62FmDJpEPj6z9+U325DH+S9IM7k0pP/uxvYgO1mEz6iac8vhnQrwvyAyeVTa7wps88sg0/nrMpMfxvaYP1iAj+d8Ec99em87lqKyowCSTznyCYfns7hB/39PHf8LaRBbI74/X/6Xe8mEIoNwUIN1UxGD7HUJWhT59ITp0Qn8g8zWODBVgp6Wj6uQov4L5WPbMIBktgPbxeSaEPIpk1Z0iUzol7HAwFsRZHEdGV/opXqvDNt6+dliG+zIJzfeA34oNl+C1Sm5Bovw7JNQN0lj8fw6HhbpmCPfRRR2Aa9QXJHv7ZiTfKi0hN7CPmxr6U15mI1+4rxYfTsxx+dD5We6V1rVy/JhhQ2SpXpeE2Wa7iKeDSv7C5qxAMP0kAmpXJr4KCw3a6bkqInM3vEV0pKGqj/nyYwdT2bB8BpNNC2OfOLFQTIF0GuxJRG1Ok5pZt0rPxCcuchzoQZUPtgiDeuNItvZitVK7sIcxUtIfhGhH4clsK8D/01hO394mzPOCiAfyCyMvF0a5K99fd6iWbxK914uorpEfbJWz7F7gMnuKhHEIKKX30zTcaWeo598qkQ+V3BmqdbjWAb+E5SYX+TIJxiHsDyfhViOzjTM4eY53WaVeP098iM9rQdeLI5iu5a2An8nlbsaW4CaJI5L03lR5uiuIq6xXhriAsLT/78sH9CFIiAwp3mVvl+nwXaj/E6v6tqTzlHZDMvR2ajJqAyLSFUTvY34cMnN3Dye+TbgEWyv9mLqnX++VsyRT3Rn/406604sEhQX/gXb+C+ODQpPaLDdCNyMOR2vTrhvtgH/JnOoWOwVcdVj+6aFoRb4lo4wrB5gvp5ceFeyWyZZiGvX2O2YY/uROC7myCc//Cfm0b+jxEG9E3geiwg1kExZ1NUSuk4sszVubXCT7mE98exnvxX4V133b0O0lTCneZs0nuexZLv9TmTZI7ndgq25m13i9dYBT0p2Y4Ejn/ywX6r8YRHIUplhhcwoH0rTeUKvkyqwdQRzBrZgjuylmAOyjuLr/+yVNvGmSOJD+VPiCGOfFIm1qn+/JTOrJs/vN8jP8TMR2ae4Eh6oDxqlAbVi+VpXEp6rlUvzX6vDq7ZwyJFP7xDQKgn7R2SWF/gHSTXmrGvDIg+eTbwDS7xbS3SYPg4c1LFObZ0h8plBZnXzeLV1GJb30a02e4TSqu82+8jnXQ3uuHEai5g9jfmwGkXug+XTGYw50stEqs2+2X2jyHadE9GcvpUD0ggPSQ5rJadz9OyHYw77LvVrl+R3Hxb1XSO5/SyP33PkkyC8NPbNWBTmDiz/Ac7cLvYzDdQt+uypmEyUYma/VTrAHIq3qa0L1N5JIp+0Bv0Jn4n4mAZ3T2oSKyX007EI1wP6Ox2LuryHJbalsUjhb51Y5oU1OoZjSbQrsCjjFJFPtybWdsnBq1gOED75jhWpdNqV1x1AcLuGDizNJ+jZpyI+J4/PS4ar5+OIx8HJQa/g/wGUzmDKja6XYgAAAABJRU5ErkJggg==" alt="Inbound"><span class="sep"></span><span>Derimod · AI görünürlük raporu</span></div>
+  <h1>Derimod <em>AI görünürlük</em> raporu</h1>
+  <p class="lead">Son 30 günde ChatGPT ve Gemini'ye <b>222 soru</b> düzenli olarak sorulmuş, dönen <b>1.688 cevabın</b> tam metni analiz edilmiştir. Google <b>AI Overview</b> aynı sorularla ayrıca ölçülmüştür.</p>
+  <div class="kpis">
+    <div class="kpi"><div class="v num">61,1<small>%</small></div><div class="l">Visibility · tüm sorular</div><span class="chip">1.031 / 1.688 cevap</span></div>
+    <div class="kpi green"><div class="v num">99,8<small>%</small></div><div class="l">Visibility · markalı sorular</div><span class="chip">1. sıra · 5 marka</span></div>
+    <div class="kpi green"><div class="v num">22,6<small>%</small></div><div class="l">Visibility · markasız sorular</div><span class="chip">1. sıra · 6 marka</span></div>
+    <div class="kpi"><div class="v num">55,8<small>%</small></div><div class="l">AI Overview Visibility</div><span class="chip">449 / 805 AI Overview</span></div>
+  </div>
+  <div class="pills">
+    <span class="pill">ChatGPT %56,7 · Gemini %65,0</span>
+    <span class="pill">Avg Position 2,7</span>
+    <span class="pill">12.450 citation</span>
+    <span class="pill">6 izlenen rakip marka</span>
+  </div>
+</header>
+
+<!-- 01 Sözlük -->
+<section class="block" id="sozluk">
+  <div class="eyebrow">01 &nbsp;|&nbsp; Metrik sözlüğü</div>
+  <h2>Rapordaki metrikler ve kavramlar</h2>
+  <p class="intro">Rapor boyunca kullanılan metrikler aşağıda üç grupta açıklanmıştır. Her kartta metriğin bu dönemdeki Derimod değeri örnek olarak verilmiştir. Metrik adları ölçüm aracındaki adlarla aynı tutulmuştur.</p>
+
+  <div class="gloss-group">
+    <div class="meta">Görünme metrikleri · markanın cevapta anılması</div>
+    <div class="grid2">
+      <div class="gcard"><div class="name">Visibility</div><div class="val num">%61,1<span>tüm sorular</span></div><p>Markanın yapay zekâ cevaplarının yüzde kaçında adıyla geçtiğini gösterir. Derimod, son 30 günde 1.688 ChatGPT ve Gemini cevabının 1.031'inde yer almıştır.</p></div>
+      <div class="gcard"><div class="name">Mentions</div><div class="val num">1.031<span>cevap</span></div><p>Markanın adıyla geçtiği cevap sayısıdır. Oran değil, ham sayıdır; Visibility bu sayının toplam cevaba bölünmesiyle bulunur.</p></div>
+      <div class="gcard"><div class="name">Share of Voice</div><div class="val num">%75,5<span>tüm sorular</span></div><p>Cevaplarda izlenen markaların toplam anılma sayısı içinde Derimod'un payıdır. Yalnızca metinde anılmayı ölçer, kaynak gösterilmeyi ölçmez.</p></div>
+      <div class="gcard"><div class="name">Avg Position</div><div class="val num">2,7<span>tüm sorular</span></div><p>Model birden fazla marka önerdiğinde Derimod'un listede ortalama kaçıncı sırada yer aldığıdır. <b>1 en iyi değerdir</b>; sayı küçüldükçe marka ilk önerilere yaklaşır. Markalı sorularda 1,8, markasız sorularda 4,6'dır.</p></div>
+    </div>
+  </div>
+
+  <div class="gloss-group">
+    <div class="meta">Kaynak metrikleri · markanın sitesinin okunması</div>
+    <div class="grid2">
+      <div class="gcard"><div class="name">Source Visibility</div><div class="val num">%48,2<span>tüm sorular</span></div><p>Cevabın kaynakçasında derimod.com.tr adresinin gösterildiği cevap oranıdır. Anılmadan bağımsızdır: marka adı geçmeden de site kaynak olarak gösterilebilir.</p></div>
+      <div class="gcard"><div class="name">Citations</div><div class="val num">12.450<span>toplam</span></div><p>Cevaplarda kaynak olarak gösterilen bağlantı sayısıdır. Bu dönemde 2.448 citation (%19,7) derimod.com.tr adresine gitmiştir.</p></div>
+    </div>
+  </div>
+
+  <div class="gloss-group">
+    <div class="meta">Diğer metrikler</div>
+    <div class="grid2">
+      <div class="gcard"><div class="name">AI Overview Visibility</div><div class="val num">%55,8<span>tetiklenen AI Overview</span></div><p>Google arama sonuçlarının üstünde AI Overview özeti çıktığında Derimod'un bu özette geçme oranıdır. Paydası yalnızca AI Overview'ın çıktığı aramalardır; bu nedenle Visibility ile aynı sayı değildir.</p></div>
+      <div class="gcard"><div class="name">Sentiment</div><div class="val num">%16,8<span>olumlu</span></div><p>Derimod'un geçtiği cevaplardaki tondur ve olumlu, nötr veya olumsuz olarak sınıflandırılır. Bu dönemde cevapların %16,8'i olumlu, %0,5'i olumsuzdur.</p></div>
+    </div>
+  </div>
+
+  <div class="gloss-group">
+    <div class="meta">Raporu okurken bilinmesi gereken kavramlar</div>
+    <div class="concepts">
+      <div class="concept"><b>Markalı ve markasız sorular</b>Markalı sorularda soru metninde Derimod adı geçer ("Derimod botlar şehir kışına yeter mi?"). Markasız sorularda marka adı geçmez ("kaliteli deri mont markaları"). Rekabetin asıl yaşandığı alan markasız sorulardır.</div>
+      <div class="concept"><b>Mention ve citation</b>Mention, markanın cevap metninde anılmasıdır. Citation, cevabın altında kaynak olarak gösterilen bağlantıdır. Bir cevap markayı anıp sitesini kaynak göstermeyebilir ya da tersi olabilir.</div>
+      <div class="concept"><b>Cevap</b>Her soru dönem boyunca her modelde düzenli aralıklarla yeniden sorulur. Bu nedenle 222 soru, 30 günde 1.688 ChatGPT ve Gemini cevabı üretmiştir. Oranlar cevap sayısı üzerinden hesaplanır.</div>
+      <div class="concept"><b>Yüzde ve puan</b>İki oran arasındaki fark "puan" ile ifade edilir. Örneğin %60,9'dan %61,1'e çıkış 0,2 puanlık bir artıştır.</div>
+    </div>
+  </div>
+</section>
+
+<!-- 02 Metodoloji -->
+<section class="block" id="metodoloji">
+  <div class="eyebrow">02 &nbsp;|&nbsp; Metodoloji</div>
+  <h2>Nasıl ölçüldü?</h2>
+  <p class="intro">Ölçüm <b>Inbound AI Visibility</b> aracı ile yapılmıştır. Rapor 30 Ağustos - 29 Eylül 2026 dönemini, yani son 30 günü kapsar.</p>
+  <div class="card">
+    <ul class="method">
+      <li><span>A</span><div><b>Soru seti.</b> 222 soru, 110 markalı ve 112 markasız olmak üzere iki grupta izlenir. Sorular ürün kategorileri, marka algısı, satın alma niyeti ve kullanım senaryoları gibi konu klasörlerine ayrılmıştır.</div></li>
+      <li><span>B</span><div><b>Modeller.</b> Visibility, Share of Voice ve Avg Position ChatGPT ve Gemini cevapları üzerinden hesaplanır. Google AI Overview kendi paydasıyla ayrı raporlanır.</div></li>
+      <li><span>C</span><div><b>Analiz.</b> Cevapların tam metni üzerinde marka anılması, sıra ve ton analizi yapılmış; cevaplarda gösterilen kaynaklar (citation) ayrıca sınıflandırılmıştır.</div></li>
+      <li><span>D</span><div><b>Rakip seti.</b> Rakip sıralamaları projede izlenen 6 markayla sınırlıdır: Desa, Tergan, Marjin, Nine West, Tamer Tanca ve Kemal Tanca. Cevaplarda geçen diğer markalar sıralamaya dahil değildir.</div></li>
+      <li><span>E</span><div><b>Ton.</b> Yalnızca Derimod'un geçtiği cevaplar sınıflandırılır. Karma tonlu cevaplar nötr içinde raporlanır.</div></li>
+      <li><span>F</span><div><b>Kapsam.</b> AI görünürlüğü ürün kalitesinin değil, modellerin okuduğu kaynak ekosisteminin ölçüsüdür.</div></li>
+    </ul>
+  </div>
+  <div class="stats">
+    <div class="stat"><div class="v num">222</div><div class="l">izlenen soru</div></div>
+    <div class="stat"><div class="v num">1.688</div><div class="l">cevap metni<br>ChatGPT 804 · Gemini 884</div></div>
+    <div class="stat"><div class="v num">834</div><div class="l">AI Overview sorgusu<br>805'inde özet çıktı</div></div>
+    <div class="stat"><div class="v num">12.450</div><div class="l">citation<br>1.374 farklı site</div></div>
+  </div>
+</section>
+
+<!-- 03 Bulgular -->
+<section class="block" id="bulgular">
+  <div class="eyebrow">03 &nbsp;|&nbsp; Öne çıkan bulgular</div>
+  <h2>Öne çıkan bulgular</h2>
+  <div class="findings-lead">Markalı sorularda yüksek görünürlük beklenen bir sonuçtur, çünkü soruda marka adı zaten geçer. Görünürlüğün asıl belirlendiği alan, kullanıcının marka adı vermeden sorduğu <b>markasız sorulardır</b>. Aşağıdaki bulgular bu ayrım gözetilerek okunmalıdır.</div>
+  <div class="grid2">
+    <article class="finding">
+      <div class="tag">BULGU 01</div>
+      <h3>Markalı sorularda Derimod neredeyse her cevapta ve listenin başında</h3>
+      <ul>
+        <li>Visibility: <b>%99,8</b> (842 cevabın 840'ı)</li>
+        <li>Sıra bilgisi olan cevapların <b>%85,8'inde</b> ilk iki sırada</li>
+        <li>En yakın izlenen rakip Desa: %3,4</li>
+      </ul>
+      <p class="means"><i>Ne anlama geliyor?</i>Modeller Derimod'u tanımakta ve markayla ilgili sorularda doğru markayı öne çıkarmaktadır.</p>
+    </article>
+    <article class="finding">
+      <div class="tag">BULGU 02</div>
+      <h3>Markasız sorularda ilk sırada, ancak her 100 cevabın yaklaşık 23'ünde</h3>
+      <ul>
+        <li>Visibility: <b>%22,6</b> (846 cevabın 191'i)</li>
+        <li>Desa %14,3, Tergan %13,7 ile takip ediyor</li>
+        <li>Avg Position <b>4,6</b>; ilk iki sırada yer alma oranı %34,3</li>
+      </ul>
+      <p class="means"><i>Ne anlama geliyor?</i>Kategori sorularında Derimod izlenen rakiplerden daha sık önerilmekte, ancak listelerde çoğunlukla orta sıralarda yer almaktadır.</p>
+    </article>
+    <article class="finding">
+      <div class="tag">BULGU 03</div>
+      <h3>Gemini, Derimod'u ChatGPT'den daha sık anıyor</h3>
+      <ul>
+        <li>Tüm sorular: Gemini <b>%65,0</b>, ChatGPT <b>%56,7</b></li>
+        <li>Markasız sorular: Gemini %30,9, ChatGPT <b>%13,3</b></li>
+        <li>Markasız sorularda derimod.com.tr, ChatGPT cevaplarının yalnızca %3,8'inde kaynak</li>
+      </ul>
+      <p class="means"><i>Ne anlama geliyor?</i>Model farkı en çok markasız sorularda belirginleşmektedir. ChatGPT'nin markasız cevaplarında Derimod hem daha seyrek anılmakta hem de daha seyrek kaynak gösterilmektedir.</p>
+    </article>
+    <article class="finding">
+      <div class="tag">BULGU 04</div>
+      <h3>Marka hakkındaki bilginin önemli kısmı üçüncü taraf sitelerden okunuyor</h3>
+      <ul>
+        <li>Derimod <b>%61,1</b> oranında anılıyor, derimod.com.tr <b>%48,2</b> oranında kaynak gösteriliyor</li>
+        <li>Şikayetvar 744 citation alıyor; bunların 742'si Derimod'un geçtiği cevaplarda</li>
+        <li>Marka & Güven sorularında kaynakların <b>%39,8'i</b> Şikayetvar</li>
+      </ul>
+      <p class="means"><i>Ne anlama geliyor?</i>Güvenilirlik ve kalite sorularında modellerin Derimod'u nasıl anlattığını büyük ölçüde Şikayetvar ve pazaryeri sayfaları belirlemektedir.</p>
+    </article>
+    <article class="finding">
+      <div class="tag">BULGU 05</div>
+      <h3>Markasız Google aramalarında AI Overview neredeyse her zaman çıkıyor</h3>
+      <ul>
+        <li>Markasız aramaların <b>%99,1'inde</b> AI Overview gösteriliyor</li>
+        <li>Derimod bu özetlerin <b>%15,7'sinde</b> yer alıyor</li>
+        <li>İzlenen rakiplerden en az biri <b>%25,7'sinde</b> yer alıyor</li>
+      </ul>
+      <p class="means"><i>Ne anlama geliyor?</i>Derimod tek tek her rakipten daha sık anılsa da, rakipler toplamda markasız özetlerde daha sık görünmektedir. Bu özetlerde kaynak olarak en çok başka markaların rehber içerikleri okunmaktadır.</p>
+    </article>
+    <article class="finding">
+      <div class="tag">BULGU 06</div>
+      <h3>56 soruda Derimod hiçbir cevapta geçmiyor</h3>
+      <ul>
+        <li>Bu soruların tamamı markasız sorulardır</li>
+        <li>Çoğu bakım, beden ve kalıp, su geçirmezlik ve sneaker konforu gibi <b>bilgi ve rehber</b> sorularıdır</li>
+      </ul>
+      <p class="means"><i>Ne anlama geliyor?</i>Bu sorular Derimod'un ürün yelpazesiyle doğrudan ilgilidir. Bu sorularda rehber içerik üretimi öncelikli alandır.</p>
+    </article>
+  </div>
+</section>
+
+<!-- 04 Değişim -->
+<section class="block" id="degisim">
+  <div class="eyebrow">04 &nbsp;|&nbsp; Önceki döneme göre değişim</div>
+  <h2>Önceki 30 güne göre ne değişti?</h2>
+  <p class="intro">Aşağıdaki tablo, son 30 günü bir önceki 30 günlük dönemle karşılaştırır. Derimod'un görünürlüğü önceki dönemle aynı düzeyde kalmıştır; tüm metriklerdeki değişim 1,5 puanın altındadır. Kaynak gösterilme oranında 1,4 puanlık bir azalma, ortalama sırada ise 0,2'lik bir gerileme görülmektedir.</p>
+  <div class="card">
+    <div class="card-head"><h3>Derimod · temel metrikler</h3><span class="meta">Tüm sorular · ChatGPT + Gemini</span></div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Metrik</th><th>Önceki 30 gün</th><th>Son 30 gün</th><th>Değişim</th></tr></thead>
+      <tbody>
+        <tr><td>Visibility</td><td>%60,9</td><td><b>%61,1</b></td><td><span class="delta up">+0,2 puan</span></td></tr>
+        <tr><td>Share of Voice</td><td>%75,3</td><td><b>%75,5</b></td><td><span class="delta up">+0,2 puan</span></td></tr>
+        <tr><td>Source Visibility</td><td>%49,6</td><td><b>%48,2</b></td><td><span class="delta down">-1,4 puan</span></td></tr>
+        <tr><td>Avg Position <small style="color:var(--ink-3)">(1 en iyi)</small></td><td>2,5</td><td><b>2,7</b></td><td><span class="delta down">0,2 sıra geride</span></td></tr>
+      </tbody>
+    </table></div>
+    <div class="card-head" style="margin-top:6px"><h3>İzlenen rakipler · Visibility</h3></div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Marka</th><th>Önceki 30 gün</th><th>Son 30 gün</th><th>Değişim</th></tr></thead>
+      <tbody>
+        <tr><td>Desa</td><td>%8,8</td><td>%8,9</td><td><span class="delta flat">+0,1 puan</span></td></tr>
+        <tr><td>Tergan</td><td>%7,7</td><td>%7,8</td><td><span class="delta flat">+0,1 puan</span></td></tr>
+        <tr><td>Marjin</td><td>%2,4</td><td>%2,4</td><td><span class="delta flat">değişim yok</span></td></tr>
+        <tr><td>Nine West</td><td>%0,8</td><td>%0,6</td><td><span class="delta flat">-0,2 puan</span></td></tr>
+      </tbody>
+    </table></div>
+    <ul class="notes">
+      <li>Günlük değerler soruların hangi gün çalıştığına göre dalgalandığından, değerlendirme 30 günlük toplam üzerinden yapılır.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 05 Markalı -->
+<section class="block" id="markali">
+  <div class="eyebrow">05 &nbsp;|&nbsp; Markalı sorular</div>
+  <h2>Markalı sorular: tam sıralama</h2>
+  <p class="intro">Soru metninde Derimod adının geçtiği 110 sorunun 842 cevabında izlenen markaların görünürlüğü aşağıdadır.</p>
+  <div class="card">
+    <div class="howto">
+      <span class="t">Tablo nasıl okunmalı?</span>
+      <p>Bu tablo, soruda Derimod adı geçtiğinde modellerin cevapta başka hangi markaları da andığını gösterir. Derimod bu cevapların neredeyse tamamında yer alır. Rakiplerin aldığı pay iki durumdan gelir: "Derimod mu Nine West mi?" gibi doğrudan karşılaştırma soruları ve modelin Derimod'u anlatırken benzer markaları alternatif olarak önermesi. Rakipler bu sorularda daha çok Gemini cevaplarında anılır; ChatGPT markalı sorularda cevabı büyük ölçüde Derimod ile sınırlı tutar.</p>
+    </div>
+    <div class="card-head"><h3>5 markanın tamamı</h3><span class="meta">110 soru · 842 cevap</span></div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Marka</th><th>Visibility</th><th>Mentions</th><th>Share of Voice</th><th>Avg Position</th><th>ChatGPT</th><th>Gemini</th></tr></thead>
+      <tbody>
+        <tr class="own"><td>Derimod</td><td><div class="barcell"><span class="bar"><i style="width:99.8%"></i></span><b>%99,8</b></div></td><td>840</td><td>%93,8</td><td>1,8</td><td>%99,5</td><td>%100,0</td></tr>
+        <tr><td>Desa</td><td><div class="barcell"><span class="bar"><i style="width:3.4%"></i></span><b>%3,4</b></div></td><td>29</td><td>%3,2</td><td>4,0</td><td>%1,2</td><td>%5,5</td></tr>
+        <tr><td>Tergan</td><td><div class="barcell"><span class="bar"><i style="width:1.9%"></i></span><b>%1,9</b></div></td><td>16</td><td>%1,8</td><td>6,4</td><td>%0,2</td><td>%3,4</td></tr>
+        <tr><td>Marjin</td><td><div class="barcell"><span class="bar"><i style="width:0.8%"></i></span><b>%0,8</b></div></td><td>7</td><td>%0,8</td><td>4,9</td><td>%0,7</td><td>%0,9</td></tr>
+        <tr><td>Nine West</td><td><div class="barcell"><span class="bar"><i style="width:0.5%"></i></span><b>%0,5</b></div></td><td>4</td><td>%0,4</td><td>2,3</td><td>%1,0</td><td>%0,0</td></tr>
+      </tbody>
+    </table></div>
+    <ul class="notes">
+      <li>Tablo Visibility'ye göre sıralıdır. Visibility, markanın geçtiği cevap oranıdır.</li>
+      <li>Derimod'un geçmediği 2 cevap, "Derimod bilekten bağlı (Ankle Strap) modeller bacak boyunu kısa gösterir mi?" sorusuna verilen ChatGPT cevaplarıdır; Gemini bu sorunun tüm cevaplarında Derimod'u anmaktadır.</li>
+      <li>ChatGPT ve Gemini kolonları her modelin kendi cevap sayısına oranlanmıştır (ChatGPT 405, Gemini 437 cevap).</li>
+      <li>Markalı sorularda Google AI Overview sonuçları 12. bölümde ayrıca verilmiştir.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><h3>Mention edildiğinde listedeki sırası</h3><span class="meta">Markalı sorular · ChatGPT + Gemini</span></div>
+    <div class="howto">
+      <span class="t">Grafik nasıl okunmalı?</span>
+      <p>Model birden fazla marka sıraladığında Derimod'un kaçıncı sırada anıldığını gösterir. Çubukların sola yığılması, markanın önerilerin başında yer aldığı anlamına gelir. Markalı sorularda Derimod sıralı 401 cevabın 250'sinde ilk, 94'ünde ikinci sırada yer alır. Markasız sorulardaki dağılım 6. bölümde verilmiştir.</p>
+    </div>
+      <div class="dist">
+        <h4>Markalı sorular</h4>
+        <div class="cols" aria-label="Markalı sorularda sıra dağılımı">
+          <div class="col top"><span class="n">250</span><span class="b" style="height:100%"></span></div>
+          <div class="col top"><span class="n">94</span><span class="b" style="height:37.6%"></span></div>
+          <div class="col"><span class="n">13</span><span class="b" style="height:5.2%"></span></div>
+          <div class="col"><span class="n">13</span><span class="b" style="height:5.2%"></span></div>
+          <div class="col"><span class="n">6</span><span class="b" style="height:2.4%"></span></div>
+          <div class="col"><span class="n">10</span><span class="b" style="height:4%"></span></div>
+          <div class="col"><span class="n">4</span><span class="b" style="height:1.6%"></span></div>
+          <div class="col"><span class="n">2</span><span class="b" style="height:0.8%"></span></div>
+          <div class="col"><span class="n">3</span><span class="b" style="height:1.2%"></span></div>
+          <div class="col"><span class="n">6</span><span class="b" style="height:2.4%"></span></div>
+        </div>
+        <div class="axis"><span>1.</span><span>2.</span><span>3.</span><span>4.</span><span>5.</span><span>6.</span><span>7.</span><span>8.</span><span>9.</span><span>10+</span></div>
+        <p class="sum">401 sıralı cevap · ilk iki sıra <b>%85,8</b> · Avg Position <b>1,8</b></p>
+      </div>
+    
+  </div>
+</section>
+
+<!-- 06 Markasız -->
+<section class="block" id="markasiz">
+  <div class="eyebrow">06 &nbsp;|&nbsp; Markasız sorular</div>
+  <h2>Markasız sorular: tam sıralama</h2>
+  <p class="intro">Marka adı geçmeyen, kategori düzeyindeki 112 sorunun 846 cevabında izlenen markaların görünürlüğü aşağıdadır. Raporun en önemli tablosu budur, çünkü yeni müşterinin markayı ilk kez duyduğu sorular bunlardır.</p>
+  <div class="card">
+    <div class="howto">
+      <span class="t">Tablo nasıl okunmalı?</span>
+      <p>Kullanıcı marka adı vermeden "kaliteli deri mont markaları" gibi bir soru sorduğunda modelin hangi markaları önerdiği bu tabloda görülür. Derimod 846 cevabın 191'inde anılarak izlenen markalar arasında ilk sıradadır; Desa ve Tergan yaklaşık her 7 cevaptan birinde anılır. Avg Position değerleri birbirine yakındır: Derimod 4,6, Desa 4,4. Bu, Derimod'un daha sık önerildiğini ancak listelerde rakiplerinden daha önde yer almadığını gösterir.</p>
+      <p>Tabloda yalnızca izlenen rakipler yer alır. Bu sorularda Gön, Cabani, Skechers ve Flo gibi markaların siteleri de kaynak olarak sıkça okunmaktadır (9. bölüm).</p>
+    </div>
+    <div class="card-head"><h3>6 markanın tamamı</h3><span class="meta">112 soru · 846 cevap</span></div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Marka</th><th>Visibility</th><th>Mentions</th><th>Share of Voice</th><th>Avg Position</th><th>ChatGPT</th><th>Gemini</th></tr></thead>
+      <tbody>
+        <tr class="own"><td>Derimod</td><td><div class="barcell"><span class="bar"><i style="width:22.6%"></i></span><b>%22,6</b></div></td><td>191</td><td>%40,6</td><td>4,6</td><td>%13,3</td><td>%30,9</td></tr>
+        <tr><td>Desa</td><td><div class="barcell"><span class="bar"><i style="width:14.3%"></i></span><b>%14,3</b></div></td><td>121</td><td>%25,7</td><td>4,4</td><td>%8,3</td><td>%19,7</td></tr>
+        <tr><td>Tergan</td><td><div class="barcell"><span class="bar"><i style="width:13.7%"></i></span><b>%13,7</b></div></td><td>116</td><td>%24,7</td><td>5,5</td><td>%9,5</td><td>%17,4</td></tr>
+        <tr><td>Marjin</td><td><div class="barcell"><span class="bar"><i style="width:3.9%"></i></span><b>%3,9</b></div></td><td>33</td><td>%7,0</td><td>5,8</td><td>%4,3</td><td>%3,6</td></tr>
+        <tr><td>Nine West</td><td><div class="barcell"><span class="bar"><i style="width:0.7%"></i></span><b>%0,7</b></div></td><td>6</td><td>%1,3</td><td>7,5</td><td>%1,5</td><td>%0,0</td></tr>
+        <tr><td>Tamer Tanca</td><td><div class="barcell"><span class="bar"><i style="width:0.4%"></i></span><b>%0,4</b></div></td><td>3</td><td>%0,6</td><td>-</td><td>%0,8</td><td>%0,0</td></tr>
+      </tbody>
+    </table></div>
+    <ul class="notes">
+      <li>ChatGPT ve Gemini kolonları her modelin kendi cevap sayısına oranlanmıştır (ChatGPT 399, Gemini 447 cevap).</li>
+      <li>Avg Position için 1 en iyi değerdir. Tamer Tanca için sıra bilgisi oluşmamıştır.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><h3>Mention edildiğinde listedeki sırası</h3><span class="meta">Markasız sorular · ChatGPT + Gemini</span></div>
+    <div class="howto">
+      <span class="t">Grafik nasıl okunmalı?</span>
+      <p>Model birden fazla marka sıraladığında Derimod'un kaçıncı sırada anıldığını gösterir. Markasız sorularda dağılım markalı sorulara göre daha yayvandır: sıralı 169 cevabın 41'inde Derimod ilk sıradadır, cevapların önemli bir kısmında ise 3. ile 7. sıralar arasında yer alır. İlk iki sırada yer alma oranı markalı sorularda %85,8, markasız sorularda %34,3'tür.</p>
+    </div>
+      <div class="dist">
+        <h4>Markasız sorular</h4>
+        <div class="cols" aria-label="Markasız sorularda sıra dağılımı">
+          <div class="col top"><span class="n">41</span><span class="b" style="height:100.0%"></span></div>
+          <div class="col top"><span class="n">17</span><span class="b" style="height:41.5%"></span></div>
+          <div class="col"><span class="n">24</span><span class="b" style="height:58.5%"></span></div>
+          <div class="col"><span class="n">28</span><span class="b" style="height:68.3%"></span></div>
+          <div class="col"><span class="n">11</span><span class="b" style="height:26.8%"></span></div>
+          <div class="col"><span class="n">6</span><span class="b" style="height:14.6%"></span></div>
+          <div class="col"><span class="n">18</span><span class="b" style="height:43.9%"></span></div>
+          <div class="col"><span class="n">3</span><span class="b" style="height:7.3%"></span></div>
+          <div class="col"><span class="n">6</span><span class="b" style="height:14.6%"></span></div>
+          <div class="col"><span class="n">15</span><span class="b" style="height:36.6%"></span></div>
+        </div>
+        <div class="axis"><span>1.</span><span>2.</span><span>3.</span><span>4.</span><span>5.</span><span>6.</span><span>7.</span><span>8.</span><span>9.</span><span>10+</span></div>
+        <p class="sum">169 sıralı cevap · ilk iki sıra <b>%34,3</b> · Avg Position <b>4,6</b></p>
+      </div>
+    <ul class="notes"><li>Çubuklar bu grafikteki en yüksek değere (41 cevap) göre ölçeklenmiştir.</li></ul>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><h3>Markasız sorularda model farkı</h3><span class="meta">Visibility · ChatGPT ve Gemini</span></div>
+    <div class="legend"><span><i style="background:var(--c-gpt)"></i>ChatGPT</span><span><i style="background:var(--c-gem)"></i>Gemini</span></div>
+    <div class="hbars">
+      <div class="pair">
+        <div class="hbar"><span class="name">Derimod</span><span class="track"><i style="width:43%;background:var(--c-gpt)"></i></span><span class="val">%13,3</span></div>
+        <div class="hbar"><span class="name"></span><span class="track"><i style="width:100%;background:var(--c-gem)"></i></span><span class="val">%30,9</span></div>
+      </div>
+      <div class="pair">
+        <div class="hbar"><span class="name">Desa</span><span class="track"><i style="width:26.9%;background:var(--c-gpt)"></i></span><span class="val">%8,3</span></div>
+        <div class="hbar"><span class="name"></span><span class="track"><i style="width:63.8%;background:var(--c-gem)"></i></span><span class="val">%19,7</span></div>
+      </div>
+      <div class="pair">
+        <div class="hbar"><span class="name">Tergan</span><span class="track"><i style="width:30.7%;background:var(--c-gpt)"></i></span><span class="val">%9,5</span></div>
+        <div class="hbar"><span class="name"></span><span class="track"><i style="width:56.3%;background:var(--c-gem)"></i></span><span class="val">%17,4</span></div>
+      </div>
+      <div class="pair">
+        <div class="hbar"><span class="name">Marjin</span><span class="track"><i style="width:13.9%;background:var(--c-gpt)"></i></span><span class="val">%4,3</span></div>
+        <div class="hbar"><span class="name"></span><span class="track"><i style="width:11.7%;background:var(--c-gem)"></i></span><span class="val">%3,6</span></div>
+      </div>
+    </div>
+    <ul class="notes">
+      <li>Gemini markasız sorularda Derimod, Desa ve Tergan'ı ChatGPT'den daha sık anmaktadır; fark en yüksek Derimod'dadır (17,6 puan).</li>
+      <li>Çubuklar en yüksek değere (%30,9) göre ölçeklenmiştir.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 07 Mention & Source -->
+<section class="block" id="kaynak-gosterilme">
+  <div class="eyebrow">07 &nbsp;|&nbsp; Mention ve Source Visibility</div>
+  <h2>Anılmak ve kaynak gösterilmek</h2>
+  <p class="intro"><b>Visibility</b> markanın cevap metninde anılmasını, <b>Source Visibility</b> ise markanın sitesinin cevabın kaynakçasında gösterilmesini ölçer. İki metrik birlikte okunduğunda modelin marka hakkındaki bilgiyi nereden aldığı görülür.</p>
+  <div class="card">
+    <div class="card-head"><h3>Visibility ve Source Visibility</h3><span class="meta">Tüm sorular · %</span></div>
+    <div class="legend"><span><i style="background:var(--teal)"></i>Visibility (anılma)</span><span><i style="background:var(--coral)"></i>Source Visibility (kaynak gösterilme)</span></div>
+    <div class="hbars">
+      <div class="pair"><div class="hbar"><span class="name">Derimod</span><span class="track"><i style="width:61.1%;background:var(--teal)"></i></span><span class="val">%61,1</span></div><div class="hbar"><span class="name"></span><span class="track"><i style="width:48.2%;background:var(--coral)"></i></span><span class="val">%48,2</span></div></div>
+      <div class="pair"><div class="hbar"><span class="name">Desa</span><span class="track"><i style="width:8.9%;background:var(--teal)"></i></span><span class="val">%8,9</span></div><div class="hbar"><span class="name"></span><span class="track"><i style="width:5.7%;background:var(--coral)"></i></span><span class="val">%5,7</span></div></div>
+      <div class="pair"><div class="hbar"><span class="name">Tergan</span><span class="track"><i style="width:7.8%;background:var(--teal)"></i></span><span class="val">%7,8</span></div><div class="hbar"><span class="name"></span><span class="track"><i style="width:7.6%;background:var(--coral)"></i></span><span class="val">%7,6</span></div></div>
+      <div class="pair"><div class="hbar"><span class="name">Marjin</span><span class="track"><i style="width:2.4%;background:var(--teal)"></i></span><span class="val">%2,4</span></div><div class="hbar"><span class="name"></span><span class="track"><i style="width:5%;background:var(--coral)"></i></span><span class="val">%5,0</span></div></div>
+      <div class="pair"><div class="hbar"><span class="name">Kemal Tanca</span><span class="track"><i style="width:0%;background:var(--teal)"></i></span><span class="val">%0,0</span></div><div class="hbar"><span class="name"></span><span class="track"><i style="width:1.9%;background:var(--coral)"></i></span><span class="val">%1,9</span></div></div>
+      <div class="pair"><div class="hbar"><span class="name">Nine West</span><span class="track"><i style="width:0.6%;background:var(--teal)"></i></span><span class="val">%0,6</span></div><div class="hbar"><span class="name"></span><span class="track"><i style="width:1.4%;background:var(--coral)"></i></span><span class="val">%1,4</span></div></div>
+      <div class="pair"><div class="hbar"><span class="name">Tamer Tanca</span><span class="track"><i style="width:0.2%;background:var(--teal)"></i></span><span class="val">%0,2</span></div><div class="hbar"><span class="name"></span><span class="track"><i style="width:0.5%;background:var(--coral)"></i></span><span class="val">%0,5</span></div></div>
+    </div>
+    <div class="howto">
+      <span class="t">Grafik nasıl okunmalı?</span>
+      <p>Derimod cevapların <b>%61,1'inde</b> anılır, <b>%48,2'sinde</b> derimod.com.tr kaynak olarak gösterilir. Aradaki fark, modellerin Derimod hakkındaki bilginin bir kısmını markanın kendi sitesinden değil Şikayetvar ve Trendyol gibi üçüncü taraf sitelerden aldığını gösterir.</p>
+      <p>Marjin, Kemal Tanca ve Nine West'te kaynak gösterilme oranı anılma oranından yüksektir. Bu sitelerin sayfaları bilgi kaynağı olarak okunur, ancak marka adı cevapta her zaman geçmez.</p>
+    </div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Derimod</th><th>Visibility</th><th>Source Visibility</th></tr></thead>
+      <tbody>
+        <tr><td>Markalı sorular</td><td>%99,8</td><td>%81,8</td></tr>
+        <tr><td>Markasız sorular</td><td>%22,6</td><td>%14,7</td></tr>
+        <tr><td>ChatGPT (tüm sorular)</td><td>%56,7</td><td>%39,3</td></tr>
+        <tr><td>Gemini (tüm sorular)</td><td>%65,0</td><td>%56,2</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</section>
+
+<!-- 08 Sentiment -->
+<section class="block" id="sentiment">
+  <div class="eyebrow">08 &nbsp;|&nbsp; Sentiment analizi</div>
+  <h2>Derimod hangi tonla anlatılıyor?</h2>
+  <p class="intro">Derimod'un geçtiği cevapların tonu olumlu, nötr ve olumsuz olarak sınıflandırılmıştır. Nötr sınıf, değer yargısı içermeyen ürün ve marka listelemelerini kapsar.</p>
+  <div class="card">
+    <div class="sent">
+      <div class="donut" role="img" aria-label="Yüzde 16,8 olumlu"><div><span><b>%16,8</b><br>olumlu</span></div></div>
+      <div style="display:grid;gap:12px;min-width:0">
+        <div class="stack"><i style="width:16.8%;background:var(--green)"></i><i style="width:82.7%;background:var(--gold)"></i><i style="width:0.5%;background:var(--red)"></i></div>
+        <div class="legend"><span><i style="background:var(--green)"></i>Olumlu %16,8 (174 cevap)</span><span><i style="background:var(--gold)"></i>Nötr %82,7</span><span><i style="background:var(--red)"></i>Olumsuz %0,5 (5 cevap)</span></div>
+        <p style="font-size:15px;color:var(--ink-2)">Her 100 cevabın yaklaşık 17'si Derimod'dan olumlu söz eder, 1'den azı olumsuzdur. Kalan cevaplar markayı değer yargısı eklemeden listeler veya tanıtır.</p>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head"><h3>Model ve soru türüne göre ton</h3><span class="meta">Olumlu cevap oranı</span></div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Kırılım</th><th>Olumlu</th><th>Olumsuz</th></tr></thead>
+      <tbody>
+        <tr><td>Gemini</td><td><b>%20,0</b></td><td>%0,0</td></tr>
+        <tr><td>ChatGPT</td><td><b>%12,8</b></td><td>%1,1</td></tr>
+        <tr><td>Markalı sorular</td><td><b>%15,3</b></td><td>%0,6</td></tr>
+        <tr><td>Markasız sorular</td><td><b>%23,9</b></td><td>%0,0</td></tr>
+      </tbody>
+    </table></div>
+    <ul class="notes">
+      <li>Markasız sorularda Derimod anıldığında olumlu ton oranı daha yüksektir (%23,9).</li>
+      <li>Olumsuz tonlu 5 cevabın tamamı ChatGPT'den gelmektedir.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 09 Citation kaynakları -->
+<section class="block" id="kaynaklar">
+  <div class="eyebrow">09 &nbsp;|&nbsp; Citation kaynakları</div>
+  <h2>Modeller hangi kaynakları okuyor?</h2>
+  <p class="intro">ChatGPT ve Gemini cevaplarında gösterilen <b>12.450 citation</b> 1.374 farklı siteye aittir. Modelin hangi kaynakları okuduğu, hangi markaları önereceğini doğrudan etkiler.</p>
+  <div class="card">
+    <div class="card-head"><h3>12.450 citation'ın kaynak tipi dağılımı</h3><span class="meta">Tüm sorular</span></div>
+    <div class="stackbar" role="img" aria-label="Kaynak tipi dağılımı">
+      <i style="width:53.2%;background:#4A4A4A"></i><i style="width:19.7%;background:var(--coral)"></i><i style="width:18%;background:var(--gold)"></i><i style="width:3.6%;background:var(--teal)"></i><i style="width:2.1%;background:#8AA89E"></i><i style="width:2%;background:#6E8FB8"></i><i style="width:1.4%;background:#CFC8BE"></i>
+    </div>
+    <div class="typelist">
+      <div><i style="background:#4A4A4A"></i><span>Diğer markaların ve mağazaların siteleri<small>Gön, Boyner, Cabani, Flo, Derimarket gibi</small></span><b>6.625 · %53,2</b></div>
+      <div><i style="background:var(--coral)"></i><span>derimod.com.tr</span><b>2.448 · %19,7</b></div>
+      <div><i style="background:var(--gold)"></i><span>Pazaryeri, fiyat karşılaştırma ve şikâyet siteleri<small>Trendyol, Şikayetvar, Hepsiburada, Akakçe</small></span><b>2.242 · %18,0</b></div>
+      <div><i style="background:var(--teal)"></i><span>İzlenen rakip siteleri</span><b>450 · %3,6</b></div>
+      <div><i style="background:#8AA89E"></i><span>Editoryal ve medya<small>Vogue, Hürriyet, Milliyet</small></span><b>265 · %2,1</b></div>
+      <div><i style="background:#6E8FB8"></i><span>Forum, video ve topluluk (<b>UGC</b>)</span><b>249 · %2,0</b></div>
+      <div><i style="background:#CFC8BE"></i><span>Referans, kamu ve diğer<small>Wikipedia dahil</small></span><b>171 · %1,4</b></div>
+    </div>
+    <ul class="notes"><li>Kaynak tipleri Inbound AI Visibility aracının sınıflandırmasıdır. Rakip siteleri, projede rakip olarak tanımlı domain'lerdir.</li></ul>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><h3>Marka hakkında en çok okunan üçüncü taraf siteler</h3><span class="meta">Pazaryeri · şikâyet · referans</span></div>
+    <div class="howto">
+      <span class="t">Tablo nasıl okunmalı?</span>
+      <p>Kullanıcılar Derimod'un güvenilirliğini, fiyatını veya kalitesini sorduğunda modeller bu sitelerdeki Derimod sayfalarını okur. Son sütun, citation'ların ne kadarının Derimod'un anıldığı cevaplardan geldiğini gösterir. Şikayetvar'ın 744 citation'ının 742'si bu cevaplardandır; yani Şikayetvar neredeyse yalnızca Derimod hakkında bilgi kaynağı olarak okunmaktadır.</p>
+    </div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Site</th><th class="l">Tür</th><th>Citation</th><th>Derimod'un anıldığı cevaplarda</th></tr></thead>
+      <tbody>
+        <tr><td>trendyol.com</td><td class="l">Pazaryeri</td><td>914</td><td>725</td></tr>
+        <tr><td><b>sikayetvar.com</b></td><td class="l">Şikâyet platformu</td><td>744</td><td><b>742</b></td></tr>
+        <tr><td>hepsiburada.com</td><td class="l">Pazaryeri</td><td>294</td><td>246</td></tr>
+        <tr><td>akakce.com</td><td class="l">Fiyat karşılaştırma</td><td>105</td><td>88</td></tr>
+        <tr><td>cimri.com</td><td class="l">Fiyat karşılaştırma</td><td>86</td><td>77</td></tr>
+        <tr><td>en.wikipedia.org</td><td class="l">Referans</td><td>65</td><td>63</td></tr>
+        <tr><td>tr.wikipedia.org</td><td class="l">Referans</td><td>30</td><td>28</td></tr>
+        <tr><td>ciceksepeti.com</td><td class="l">Pazaryeri</td><td>29</td><td>11</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <div class="card-head"><h3>Topluluk kaynakları</h3><span class="meta">Forum · video · soru-cevap</span></div>
+      <p style="font-size:14.5px;color:var(--ink-2)">Modellerin "kullanıcılar ne diyor?" sorusuna cevap ararken okuduğu katmandır. Toplam citation içindeki payı %2 düzeyindedir, ancak marka algısını doğrudan yansıtır.</p>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Site</th><th>Citation</th></tr></thead>
+        <tbody>
+          <tr><td>youtube.com</td><td>56</td></tr>
+          <tr><td>reddit.com</td><td>54</td></tr>
+          <tr><td>facebook.com</td><td>20</td></tr>
+          <tr><td>kizlarsoruyor.com</td><td>20</td></tr>
+          <tr><td>forum.donanimhaber.com</td><td>17</td></tr>
+          <tr><td>tr.linkedin.com</td><td>17</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3>Editoryal kaynaklar</h3><span class="meta">Medya · blog · liste siteleri</span></div>
+      <p style="font-size:14.5px;color:var(--ink-2)">Moda ve haber siteleri ile "en iyi marka" listeleri yayınlayan sitelerdir. Modeller öneri listelerini hazırlarken bu içeriklerden yararlanır.</p>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Site</th><th>Citation</th></tr></thead>
+        <tbody>
+          <tr><td>vogue.com.tr</td><td>38</td></tr>
+          <tr><td>hurriyet.com.tr</td><td>22</td></tr>
+          <tr><td>milliyet.com.tr</td><td>16</td></tr>
+          <tr><td>webtekno.com</td><td>14</td></tr>
+          <tr><td>yorum.com</td><td>8</td></tr>
+          <tr><td>ortopedikterlik.com</td><td>7</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </div>
+</section>
+
+<!-- 10 Klasörler -->
+<section class="block" id="klasorler">
+  <div class="eyebrow">10 &nbsp;|&nbsp; Kategori görünümü</div>
+  <h2>Klasör bazlı görünürlük</h2>
+  <p class="intro">Sorular konu klasörlerine ayrılmıştır. Markalı ve markasız klasörler farklı davrandığı için iki ayrı tabloda verilmiştir.</p>
+
+  <div class="card">
+    <div class="card-head"><h3>Markasız klasörler</h3><span class="meta">112 soru · Visibility'ye göre sıralı</span></div>
+    <div class="howto">
+      <span class="t">Öncelikli alanlar</span>
+      <p>Derimod'un ürün yelpazesinde yer aldığı halde görünürlüğün sınırlı kaldığı klasörler içerik üretimi için öncelikli alanlardır: <b>Bot & Kış Performansı</b> (%8,8), <b>Deri Mont & Ceket</b> (%7,1), <b>Deri Bakım & Temizlik</b> (%14,3), <b>Loafer</b> (%17,9), <b>Topuklu Ayakkabı</b> (%5,0) ve <b>Sneaker & Günlük Kullanım</b> (%0). Bu klasörlerde en çok okunan kaynaklar diğer markaların, mağazaların ve pazaryerlerinin sayfalarıdır.</p>
+    </div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Klasör</th><th>Soru</th><th>Visibility</th><th>Source Visibility</th><th class="l">En çok okunan kaynak</th></tr></thead>
+      <tbody>
+        <tr><td>Satın Alma Niyeti</td><td>4</td><td><div class="barcell"><span class="bar"><i style="width:64.5%"></i></span><b>%64,5</b></div></td><td>%48,4</td><td class="l"><span class="src">trendyol.com</span></td></tr>
+        <tr><td>Marka Karşılaştırma</td><td>9</td><td><div class="barcell"><span class="bar"><i style="width:53.2%"></i></span><b>%53,2</b></div></td><td>%21,0</td><td class="l"><span class="src">tergan.com.tr</span></td></tr>
+        <tr><td>Sezon & Trend</td><td>8</td><td><div class="barcell"><span class="bar"><i style="width:53.1%"></i></span><b>%53,1</b></div></td><td>%39,1</td><td class="l"><span class="src">trendyol.com</span></td></tr>
+        <tr><td>Persona Bazlı Prompt</td><td>7</td><td><div class="barcell"><span class="bar"><i style="width:48.2%"></i></span><b>%48,2</b></div></td><td>%25,0</td><td class="l"><span class="src">tergan.com.tr</span></td></tr>
+        <tr><td>Özel Gün & Kullanım Senaryosu</td><td>4</td><td><div class="barcell"><span class="bar"><i style="width:31.3%"></i></span><b>%31,3</b></div></td><td>%9,4</td><td class="l"><span class="src">trendyol.com</span></td></tr>
+        <tr><td>Çanta (Genel)</td><td>4</td><td><div class="barcell"><span class="bar"><i style="width:23.3%"></i></span><b>%23,3</b></div></td><td>%3,3</td><td class="l"><span class="src">trendyol.com</span></td></tr>
+        <tr><td>Fiyat & Değer Algısı</td><td>2</td><td><div class="barcell"><span class="bar"><i style="width:18.8%"></i></span><b>%18,8</b></div></td><td>%0,0</td><td class="l"><span class="src">cabani.com.tr</span></td></tr>
+        <tr><td>Loafer</td><td>14</td><td><div class="barcell"><span class="bar"><i style="width:17.9%"></i></span><b>%17,9</b></div></td><td>%17,9</td><td class="l"><span class="src">gon.com.tr</span></td></tr>
+        <tr><td>Deri Bakım & Temizlik</td><td>10</td><td><div class="barcell"><span class="bar"><i style="width:14.3%"></i></span><b>%14,3</b></div></td><td>%17,1</td><td class="l"><span class="src">trendyol.com</span></td></tr>
+        <tr><td>Sneaker</td><td>11</td><td><div class="barcell"><span class="bar"><i style="width:12.6%"></i></span><b>%12,6</b></div></td><td>%10,3</td><td class="l"><span class="src">trendyol.com</span></td></tr>
+        <tr><td>Babet</td><td>5</td><td><div class="barcell"><span class="bar"><i style="width:10.3%"></i></span><b>%10,3</b></div></td><td>%5,1</td><td class="l"><span class="src">cabani.com.tr</span></td></tr>
+        <tr><td>Kampanya & Satın Alma (Genel)</td><td>3</td><td><div class="barcell"><span class="bar"><i style="width:9.5%"></i></span><b>%9,5</b></div></td><td>%0,0</td><td class="l"><span class="src">adidas.com.tr</span></td></tr>
+        <tr><td>Bot & Kış Performansı</td><td>8</td><td><div class="barcell"><span class="bar"><i style="width:8.8%"></i></span><b>%8,8</b></div></td><td>%0,0</td><td class="l"><span class="src">decathlon.com.tr</span></td></tr>
+        <tr><td>Deri Mont & Ceket</td><td>4</td><td><div class="barcell"><span class="bar"><i style="width:7.1%"></i></span><b>%7,1</b></div></td><td>%21,4</td><td class="l"><span class="src">dericompany.com.tr</span></td></tr>
+        <tr><td>Topuklu Ayakkabı</td><td>5</td><td><div class="barcell"><span class="bar"><i style="width:5%"></i></span><b>%5,0</b></div></td><td>%7,5</td><td class="l"><span class="src">trendyol.com</span></td></tr>
+        <tr><td>Bakım & Kullanım</td><td>3</td><td><div class="barcell"><span class="bar"><i style="width:4.2%"></i></span><b>%4,2</b></div></td><td>%4,2</td><td class="l"><span class="src">derimarket.net</span></td></tr>
+        <tr><td>Sneaker & Günlük Kullanım</td><td>6</td><td><div class="barcell"><span class="bar"><i style="width:0%"></i></span><b>%0,0</b></div></td><td>%0,0</td><td class="l"><span class="src">trendyol.com</span></td></tr>
+        <tr><td>Beden & Kalıp</td><td>2</td><td><div class="barcell"><span class="bar"><i style="width:0%"></i></span><b>%0,0</b></div></td><td>%0,0</td><td class="l"><span class="src">ayakkabiciniz.com</span></td></tr>
+        <tr><td>Beden & Kalıp (Genel)</td><td>2</td><td><div class="barcell"><span class="bar"><i style="width:0%"></i></span><b>%0,0</b></div></td><td>%0,0</td><td class="l"><span class="src">ayakkabiciniz.com</span></td></tr>
+        <tr><td>Kargo & İade</td><td>1</td><td><div class="barcell"><span class="bar"><i style="width:0%"></i></span><b>%0,0</b></div></td><td>%0,0</td><td class="l"><span class="src">enuygun.com</span></td></tr>
+      </tbody>
+    </table></div>
+    <ul class="notes"><li>Soru sayısı az olan klasörlerde oranlar birkaç cevapla değişebilir; bu klasörler eğilim olarak okunmalıdır.</li></ul>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><h3>Markalı klasörler</h3><span class="meta">110 soru</span></div>
+    <div class="howto">
+      <span class="t">Tablo nasıl okunmalı?</span>
+      <p>Markalı sorularda görünürlük tüm klasörlerde %97 ve üzerindedir; fark kaynak tarafında ortaya çıkar. <b>Marka & Güven</b> ve <b>Beden & Kalıp</b> klasörlerinde en çok okunan kaynak derimod.com.tr değil Şikayetvar'dır. Beden & Kalıp klasöründe Source Visibility %35,7 ile markalı klasörler arasındaki en düşük değerdedir.</p>
+    </div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Klasör</th><th>Soru</th><th>Visibility</th><th>Source Visibility</th><th>derimod.com.tr payı</th><th class="l">En çok okunan kaynak</th></tr></thead>
+      <tbody>
+        <tr><td>Marka Algısı & Kurumsal</td><td>10</td><td>%100,0</td><td>%78,8</td><td>%41,4</td><td class="l"><span class="src own">derimod.com.tr</span></td></tr>
+        <tr><td>Topuklu Ayakkabı</td><td>9</td><td>%97,1</td><td>%70,0</td><td>%32,2</td><td class="l"><span class="src own">derimod.com.tr</span></td></tr>
+        <tr><td>Ürün Bazlı Derinleşme</td><td>9</td><td>%100,0</td><td>%87,0</td><td>%35,6</td><td class="l"><span class="src own">derimod.com.tr</span></td></tr>
+        <tr><td>Rakip Karşılaştırma</td><td>7</td><td>%100,0</td><td>%87,5</td><td>%24,1</td><td class="l"><span class="src own">derimod.com.tr</span></td></tr>
+        <tr><td>Kadın Bot & Çizme</td><td>7</td><td>%100,0</td><td>%88,5</td><td>%50,0</td><td class="l"><span class="src own">derimod.com.tr</span></td></tr>
+        <tr><td><b>Marka & Güven</b></td><td>7</td><td>%100,0</td><td><b>%66,0</b></td><td>%20,8</td><td class="l"><span class="src">sikayetvar.com</span></td></tr>
+        <tr><td>Kadın Ayakkabı</td><td>6</td><td>%100,0</td><td>%93,5</td><td>%51,8</td><td class="l"><span class="src own">derimod.com.tr</span></td></tr>
+        <tr><td>Loafer</td><td>5</td><td>%100,0</td><td>%92,5</td><td>%50,0</td><td class="l"><span class="src own">derimod.com.tr</span></td></tr>
+        <tr><td>Kadın Sneaker</td><td>5</td><td>%100,0</td><td>%95,0</td><td>%63,2</td><td class="l"><span class="src own">derimod.com.tr</span></td></tr>
+        <tr><td>Fiyat & Değer Algısı</td><td>5</td><td>%100,0</td><td>%85,0</td><td>%36,9</td><td class="l"><span class="src own">derimod.com.tr</span></td></tr>
+        <tr><td>E-Ticaret & Kanal Deneyimi</td><td>5</td><td>%100,0</td><td>%74,4</td><td>%37,7</td><td class="l"><span class="src own">derimod.com.tr</span></td></tr>
+        <tr><td>Kampanya & Fiyat</td><td>4</td><td>%100,0</td><td>%93,8</td><td>%52,9</td><td class="l"><span class="src own">derimod.com.tr</span></td></tr>
+        <tr><td>Babet</td><td>4</td><td>%100,0</td><td>%87,5</td><td>%40,4</td><td class="l"><span class="src own">derimod.com.tr</span></td></tr>
+        <tr><td>Kargo & İade</td><td>4</td><td>%100,0</td><td>%100,0</td><td>%92,2</td><td class="l"><span class="src own">derimod.com.tr</span></td></tr>
+        <tr><td>Erkek Ayakkabı</td><td>4</td><td>%100,0</td><td>%82,8</td><td>%53,5</td><td class="l"><span class="src own">derimod.com.tr</span></td></tr>
+        <tr><td>Çanta</td><td>4</td><td>%100,0</td><td>%64,3</td><td>%39,7</td><td class="l"><span class="src own">derimod.com.tr</span></td></tr>
+        <tr><td>Erkek Bot</td><td>4</td><td>%100,0</td><td>%82,1</td><td>%45,4</td><td class="l"><span class="src own">derimod.com.tr</span></td></tr>
+        <tr><td>Waterproof / DRY</td><td>4</td><td>%100,0</td><td>%67,9</td><td>%37,2</td><td class="l"><span class="src own">derimod.com.tr</span></td></tr>
+        <tr><td>Sezon & Trend</td><td>2</td><td>%100,0</td><td>%93,8</td><td>%30,7</td><td class="l"><span class="src own">derimod.com.tr</span></td></tr>
+        <tr><td>Sneaker</td><td>2</td><td>%100,0</td><td>%81,3</td><td>%58,0</td><td class="l"><span class="src own">derimod.com.tr</span></td></tr>
+        <tr><td><b>Beden & Kalıp</b></td><td>2</td><td>%100,0</td><td><b>%35,7</b></td><td>%27,8</td><td class="l"><span class="src">sikayetvar.com</span></td></tr>
+        <tr><td>Persona Bazlı Prompt</td><td>1</td><td>%100,0</td><td>%50,0</td><td>%41,8</td><td class="l"><span class="src own">derimod.com.tr</span></td></tr>
+      </tbody>
+    </table></div>
+    <ul class="notes"><li>derimod.com.tr payı: klasördeki tüm citation'lar içinde derimod.com.tr adresine giden paydır.</li></ul>
+  </div>
+</section>
+
+<!-- 11 Soru bazında kaynaklar -->
+<section class="block" id="soru-kaynaklari">
+  <div class="eyebrow">11 &nbsp;|&nbsp; Soru bazında kaynaklar</div>
+  <h2>Hangi sorular hangi kaynaklardan cevaplanıyor?</h2>
+  <p class="intro">En çok citation alan 12 soru aşağıdadır. Bu 12 sorunun 9'u markasızdır. Modeller bu sorularda çok sayıda kaynak okumakta, ancak Derimod'u her cevapta anmamaktadır.</p>
+  <div class="card">
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Soru</th><th class="l">Tür</th><th>Citation</th><th>Derimod anıldı</th><th class="l">Öne çıkan kaynaklar</th></tr></thead>
+      <tbody>
+        <tr><td class="q">Minimal giyinen kadınlar için deri ayakkabı ve çanta markası önerisi</td><td class="l"><span class="tp u">Markasız</span></td><td>119</td><td>3 / 8</td><td class="l"><span class="src">tergan.com.tr 9</span> <span class="src">divarese.com.tr 7</span> <span class="src">elleshoes.com 7</span></td></tr>
+        <tr><td class="q">Ofiste giyilecek rahat ama şık kadın ayakkabısı için marka önerir misin?</td><td class="l"><span class="tp u">Markasız</span></td><td>116</td><td>4 / 8</td><td class="l"><span class="src">trendyol.com 17</span> <span class="src own">derimod.com.tr 11</span> <span class="src">divarese.com.tr 9</span></td></tr>
+        <tr><td class="q">Topuklu ayakkabılarda hangi modelleriniz bacak boyunu uzun gösterir?</td><td class="l"><span class="tp u">Markasız</span></td><td>103</td><td>0 / 8</td><td class="l"><span class="src">trendyol.com 9</span> <span class="src">gon.com.tr 7</span> <span class="src">foxayakkabi.com 6</span></td></tr>
+        <tr><td class="q">Deri ceket trendi geri mi döndü, hangi markalar önerilir?</td><td class="l"><span class="tp u">Markasız</span></td><td>100</td><td>6 / 8</td><td class="l"><span class="src">ataleather.com.tr 5</span> <span class="src">basicsandmore.com.tr 5</span> <span class="src own">derimod.com.tr 5</span></td></tr>
+        <tr><td class="q">Yeni işe başlayan biri için ofis ayakkabısı nereden alınır?</td><td class="l"><span class="tp u">Markasız</span></td><td>96</td><td>6 / 8</td><td class="l"><span class="src">trendyol.com 12</span> <span class="src">deichmann.com 9</span> <span class="src">boyner.com.tr 7</span></td></tr>
+        <tr><td class="q">Sneaker modellerinizde hangi malzemeleri kullanıyorsunuz?</td><td class="l"><span class="tp u">Markasız</span></td><td>93</td><td>2 / 8</td><td class="l"><span class="src">trendyol.com 9</span> <span class="src">superstep.com.tr 6</span> <span class="src">vitruta.com 5</span></td></tr>
+        <tr><td class="q">kaliteli deri mont markaları</td><td class="l"><span class="tp u">Markasız</span></td><td>92</td><td>6 / 7</td><td class="l"><span class="src">desa.com.tr 8</span> <span class="src own">derimod.com.tr 7</span> <span class="src">trendyol.com 7</span></td></tr>
+        <tr><td class="q">Derimod mu Greyder mi şehir botu için daha uygun?</td><td class="l"><span class="tp b">Markalı</span></td><td>91</td><td>8 / 8</td><td class="l"><span class="src own">derimod.com.tr 17</span> <span class="src">sikayetvar.com 16</span> <span class="src">greyder.com.tr 13</span></td></tr>
+        <tr><td class="q">laptop için en dayanıklı çanta hangisi</td><td class="l"><span class="tp u">Markasız</span></td><td>91</td><td>0 / 8</td><td class="l"><span class="src">maksimumbilgisayar.com 10</span> <span class="src">trendyol.com 7</span> <span class="src">donanimhaber.com 4</span></td></tr>
+        <tr><td class="q">Erkek için günlük ve kaliteli deri ayakkabı nereden alınır?</td><td class="l"><span class="tp u">Markasız</span></td><td>90</td><td>4 / 8</td><td class="l"><span class="src">derinet.com.tr 8</span> <span class="src">hotic.com.tr 7</span> <span class="src">deery.com.tr 5</span></td></tr>
+        <tr><td class="q">Kadın babet trendinde Derimod rakiplerine göre nasıl?</td><td class="l"><span class="tp b">Markalı</span></td><td>90</td><td>8 / 8</td><td class="l"><span class="src own">derimod.com.tr 15</span> <span class="src">trendyol.com 12</span> <span class="src">sikayetvar.com 7</span></td></tr>
+        <tr><td class="q">Ofis stilinde loafer trendi için Derimod iyi bir seçenek mi?</td><td class="l"><span class="tp b">Markalı</span></td><td>89</td><td>8 / 8</td><td class="l"><span class="src own">derimod.com.tr 40</span> <span class="src">trendyol.com 14</span> <span class="src">cabani.com.tr 4</span></td></tr>
+      </tbody>
+    </table></div>
+    <ul class="notes">
+      <li>Derimod anıldı: markanın geçtiği cevap sayısı / sorunun toplam cevap sayısı (ChatGPT + Gemini).</li>
+      <li>Kaynak sayıları, o sitenin bu soruda aldığı citation sayısıdır.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 12 AI Overview -->
+<section class="block" id="ai-overview">
+  <div class="eyebrow">12 &nbsp;|&nbsp; Google AI Overview</div>
+  <h2>Google AI Overview: ayrı ölçülen yüzey</h2>
+  <p class="intro">AI Overview, Google arama sonuçlarının en üstünde gösterilen yapay zekâ özetidir. Arama davranışının büyük bölümü Google'da gerçekleştiği için ChatGPT ve Gemini'den ayrı izlenir. Paydası yalnızca AI Overview'ın çıktığı aramalardır.</p>
+  <div class="aio-cards">
+    <div class="stat"><div class="v num">%96,5</div><div class="l">AI Overview çıkma oranı<br>834 aramanın 805'i</div></div>
+    <div class="stat hl"><div class="v num">%55,8</div><div class="l">AI Overview Visibility<br>805 özetin 449'unda Derimod</div></div>
+    <div class="stat"><div class="v num">%40,7</div><div class="l">derimod.com.tr kaynak gösterildi<br>805 özetin 328'inde</div></div>
+    <div class="stat"><div class="v num">%17,0</div><div class="l">En az bir izlenen rakip var<br>805 özetin 137'sinde</div></div>
+    <div class="stat"><div class="v num">5,7</div><div class="l">Özet başına ortalama<br>kaynak sayısı</div></div>
+    <div class="stat"><div class="v num">98</div><div class="l">Özet çıkan ancak Derimod'un<br>hiç geçmediği markasız soru</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><h3>Markalı ve markasız aramalarda AI Overview</h3><span class="meta">Son 30 gün</span></div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Metrik</th><th>Markalı aramalar</th><th>Markasız aramalar</th></tr></thead>
+      <tbody>
+        <tr><td>AI Overview çıkma oranı</td><td>%93,9 <small style="color:var(--ink-3)">(384/409)</small></td><td><b>%99,1</b> <small style="color:var(--ink-3)">(421/425)</small></td></tr>
+        <tr><td>Derimod özette geçiyor</td><td><b>%99,7</b> <small style="color:var(--ink-3)">(383/384)</small></td><td><b>%15,7</b> <small style="color:var(--ink-3)">(66/421)</small></td></tr>
+        <tr><td>derimod.com.tr kaynak gösteriliyor</td><td>%77,1</td><td>%7,6</td></tr>
+        <tr><td>En az bir izlenen rakip var</td><td>%7,6</td><td><b>%25,7</b></td></tr>
+      </tbody>
+    </table></div>
+    <div class="howto">
+      <span class="t">Ne anlama geliyor?</span>
+      <p>Markalı aramalarda Derimod neredeyse her özette yer alır. Markasız aramalarda ise tablo farklıdır: özet neredeyse her aramada çıkar, Derimod bu özetlerin %15,7'sinde geçer ve izlenen rakiplerden en az biri %25,7'sinde geçer. Tek tek bakıldığında Derimod en sık anılan markadır (markasız aramalarda Derimod 66, Tergan 57, Desa 43, Marjin 33 özette), ancak rakipler toplamda daha sık görünmektedir.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><h3>Derimod'un geçmediği özetlerde kaynak gösterilen siteler</h3><span class="meta">98 markasız soru</span></div>
+    <p style="font-size:15px;color:var(--ink-2)">AI Overview'ın çıktığı ancak Derimod'un hiçbir özette geçmediği 98 markasız soruda en çok kaynak gösterilen siteler diğer markaların ve mağazaların blog ve rehber sayfalarıdır. Gön 22 soruda, Cabani 21 soruda kaynak olarak gösterilmektedir.</p>
+    <div class="hbars">
+      <div class="hbar"><span class="name">gon.com.tr</span><span class="track"><i style="width:100%;background:var(--gray-bar)"></i></span><span class="val">22</span></div>
+      <div class="hbar"><span class="name">cabani.com.tr</span><span class="track"><i style="width:95.5%;background:var(--gray-bar)"></i></span><span class="val">21</span></div>
+      <div class="hbar"><span class="name">derimarket.net</span><span class="track"><i style="width:63.6%;background:var(--gray-bar)"></i></span><span class="val">14</span></div>
+      <div class="hbar"><span class="name">elleshoes.com</span><span class="track"><i style="width:54.5%;background:var(--gray-bar)"></i></span><span class="val">12</span></div>
+      <div class="hbar"><span class="name">instagram.com</span><span class="track"><i style="width:54.5%;background:var(--gray-bar)"></i></span><span class="val">12</span></div>
+      <div class="hbar"><span class="name">trendyol.com</span><span class="track"><i style="width:54.5%;background:var(--gray-bar)"></i></span><span class="val">12</span></div>
+      <div class="hbar"><span class="name">skechers.com.tr</span><span class="track"><i style="width:40.9%;background:var(--gray-bar)"></i></span><span class="val">9</span></div>
+    </div>
+    <ul class="notes"><li>Sayılar, sitenin kaynak gösterildiği soru sayısıdır. Çubuklar en yüksek değere (22) göre ölçeklenmiştir.</li></ul>
+    <div class="qlist">
+      <div class="meta" style="margin-top:6px">Örnek sorular</div>
+      <div class="qitem"><span class="qq">Süet loafer trendi hangi markalarda öne çıkıyor?</span><span class="w">Kaynak gösterilenler: <span class="src">instagram.com</span><span class="src">whowhatwear.com</span><span class="src">elleshoes.com</span><span class="src">trendyol.com</span></span></div>
+      <div class="qitem"><span class="qq">su geçirmeyen bot nasıl anlaşılır</span><span class="w">Kaynak gösterilenler: <span class="src">salomon.com.tr</span><span class="src">hummel.com.tr</span><span class="src">timberland.com.tr</span><span class="src">dogruhaber.com.tr</span></span></div>
+      <div class="qitem"><span class="qq">nubuk ayakkabı nasıl temizlenir</span><span class="w">Kaynak gösterilenler: <span class="src">flo.com.tr</span><span class="src">gon.com.tr</span><span class="src">cabani.com.tr</span></span></div>
+      <div class="qitem"><span class="qq">ayakkabıda tam kalıp ne demek</span><span class="w">Kaynak gösterilenler: <span class="src">gon.com.tr</span><span class="src">kizlarsoruyor.com</span><span class="src">huqul.com</span><span class="src">derimarket.net</span></span></div>
+      <div class="qitem"><span class="qq">kışın bot alırken nelere dikkat etmeli</span><span class="w">Kaynak gösterilenler: <span class="src">gon.com.tr</span><span class="src">markastok.com</span><span class="src">saillakers.com.tr</span><span class="src">cabani.com.tr</span></span></div>
+    </div>
+  </div>
+</section>
+
+<!-- 13 Görünmeyen sorular -->
+<section class="block" id="gorunmeyen">
+  <div class="eyebrow">13 &nbsp;|&nbsp; İçerik fırsatları</div>
+  <h2>Derimod'un hiç geçmediği 56 soru</h2>
+  <p class="intro">Son 30 günde 56 soruda Derimod hiçbir ChatGPT veya Gemini cevabında yer almamıştır. Bu soruların tamamı markasızdır ve büyük bölümü kullanıcının satın alma öncesinde veya sonrasında aradığı bilgi ve rehber sorularıdır. Sorular konularına göre aşağıda gruplanmıştır.</p>
+  <div class="grid3">
+    <div class="card theme"><h4>Deri bakım ve temizlik</h4><ul><li>deri ayakkabıdan tuz lekesi nasıl çıkar</li><li>ıslanan deri ayakkabı nasıl kurutulur</li><li>deri ayakkabı kokusu nasıl geçer</li><li>deri ayakkabı kremi şart mı</li><li>Hasır çanta nasıl temizlenir ve saklanır?</li></ul></div>
+    <div class="card theme"><h4>Beden, kalıp ve ayak yapısı</h4><ul><li>ayakkabıda tam kalıp ne demek</li><li>ayakkabı dar mı geniş kalıp mı nasıl anlaşılır</li><li>taraklı ayağa hangi ayakkabı uygun</li><li>bot alırken kalın çorapla numara nasıl seçilir</li><li>Sneaker seçerken yarım numara büyük mü almalıyım?</li></ul></div>
+    <div class="card theme"><h4>Kış, yağmur ve su geçirmezlik</h4><ul><li>su geçirmeyen bot nasıl anlaşılır</li><li>waterproof bot gerçekten su geçirmiyor mu</li><li>karda kaymayan bot hangisi</li><li>deri mont kışın sıcak tutar mı</li><li>yağmurda zarar görmeyen çanta nasıl olmalı</li></ul></div>
+    <div class="card theme"><h4>Sneaker konforu ve teknik özellikler</h4><ul><li>uzun yürüyüşe en rahat sneaker</li><li>hafif sneaker mı destekli sneaker mı</li><li>gün boyu ayakta duranlar için ayakkabı önerisi</li><li>yazın terletmeyen ayakkabı markası</li><li>Kalın tabanlı sneaker'lar ağır mıdır, yürüyüşü zorlaştırır mı?</li></ul></div>
+    <div class="card theme"><h4>Loafer, topuklu ve babet kullanımı</h4><ul><li>Loafer ayakkabılarla ne giymeliyim?</li><li>Topuklu loafer'lar hangi kombinlerle daha şık durur?</li><li>Loaferlarda deri iç astar yazın ayağımı terletir mi?</li><li>Babetler hangi mevsimlerde giyilmeye uygundur?</li><li>Topuklu ayakkabılarda hangi modelleriniz bacak boyunu uzun gösterir?</li></ul></div>
+    <div class="card theme muted"><h4>Markayla doğrudan ilişkili olmayan genel sorular</h4><p>Bu sorular belirli bir markaya yönelik değildir; modeller bu sorularda genel işlem bilgisi verir.</p><ul><li>sipariş iptali nasıl yapılır</li><li>online ayakkabı iadesi nasıl yapılır</li><li>laptop için en dayanıklı çanta hangisi</li></ul></div>
+  </div>
+</section>
+
+<!-- 14 Aksiyonlar -->
+<section class="block" id="aksiyonlar">
+  <div class="eyebrow">14 &nbsp;|&nbsp; Önerilen aksiyonlar</div>
+  <h2>Görünürlüğü artırmak için önerilen aksiyonlar</h2>
+  <p class="intro">Öneriler bu raporun bulgularına göre önceliklendirilmiştir. Site içi aksiyonlar derimod.com.tr üzerinde yapılacak çalışmaları, site dışı aksiyonlar ise modellerin Derimod hakkında okuduğu diğer kaynakları kapsar.</p>
+
+  <div class="subhead">Site içi</div>
+  <div class="actions">
+    <div class="action"><div><span class="sev p1">Öncelikli</span></div><div><h4>Bakım, kalıp ve kış kullanımı için rehber içerikler hazırlanmalıdır</h4><p>Derimod'un hiç geçmediği 56 sorunun büyük bölümü bakım, beden-kalıp ve su geçirmezlik sorularıdır. Süet ve nubuk temizliği, tuz lekesi, ıslanan derinin kurutulması, tam kalıp ve taraklı ayak için numara seçimi, kalın çorapla bot numarası gibi konularda rehber sayfalar hazırlanmalı ve ilgili ürün kategorilerine bağlanmalıdır. Su geçirmezlik rehberi DRY serisi ile ilişkilendirilmelidir.</p><p class="why">Dayanak: 13. bölüm · AI Overview çıkan ancak Derimod'un geçmediği 98 markasız soruda Gön ve Cabani rehber sayfalarıyla kaynak gösterilmektedir (12. bölüm).</p></div></div>
+    <div class="action"><div><span class="sev p2">Yüksek</span></div><div><h4>Kategori sayfalarına sık sorulan sorular bölümü eklenmelidir</h4><p>Bot, Deri Mont & Ceket, Loafer ve Sneaker kategori sayfalarına kullanım, kalıp ve malzeme sorularını cevaplayan kısa bir soru-cevap bölümü eklenmeli ve <span class="term" tabindex="0" data-tip="Schema: arama motorlarının ve yapay zekâ modellerinin sayfa içeriğini doğru anlamasını sağlayan yapılandırılmış veri işaretlemesi (JSON-LD).">Schema</span> ile <b>FAQPage</b> yapılandırılmış verisi olarak işaretlenmelidir.</p><p class="why">Dayanak: bu klasörlerde markasız Visibility %0 ile %17,9 arasındadır (10. bölüm).</p></div></div>
+    <div class="action"><div><span class="sev p2">Yüksek</span></div><div><h4>Rakip adı içermeyen konu karşılaştırma içerikleri yayınlanmalıdır</h4><p>"Outdoor bot mu şehir botu mu", "Hafif sneaker mı destekli sneaker mı", "Günlük sneaker ile spor sneaker farkı" gibi karşılaştırmalar, kullanıcının karar anındaki sorularına cevap verir ve Derimod ürünleriyle desteklenebilir. Rakip marka adlarıyla karşılaştırma sayfası hazırlanması önerilmez.</p><p class="why">Dayanak: bu üç soru, AI Overview çıkan ancak Derimod'un geçmediği markasız sorular arasındadır (12. bölüm).</p></div></div>
+    <div class="action"><div><span class="sev p3">Orta</span></div><div><h4>Ürün odaklı seçim rehberleri hazırlanmalıdır</h4><p>"Ofis için loafer seçimi", "Şehir kışı için bot seçerken dikkat edilecekler" gibi rehberler, Derimod modelleri üzerinden hazırlanmalıdır. Markanın kendi sitesinde kendini "en iyi marka" listesinde ilk sıraya koyan içerikler güvenilirlik açısından önerilmez.</p><p class="why">Dayanak: markasız sorularda Avg Position 4,6'dır; Derimod önerilmekte ancak listenin ortasında yer almaktadır (6. bölüm).</p></div></div>
+  </div>
+
+  <div class="subhead">Site dışı</div>
+  <div class="actions">
+    <div class="action"><div><span class="sev p1">Öncelikli</span></div><div><h4>Şikayetvar marka profili aktif olarak yönetilmelidir</h4><p>Şikâyetlere yanıt oranı ve çözüm süresi iyileştirilmeli, marka profili güncel tutulmalıdır. Modeller güvenilirlik ve kalite sorularında Derimod'u büyük ölçüde bu sayfalar üzerinden anlatmaktadır.</p><p class="why">Dayanak: Şikayetvar 744 citation alıyor, bunların 742'si Derimod'un anıldığı cevaplarda · Marka & Güven kaynaklarının %39,8'i (4. bulgu, 9. bölüm).</p></div></div>
+    <div class="action"><div><span class="sev p2">Yüksek</span></div><div><h4>Pazaryeri ürün sayfaları zenginleştirilmelidir</h4><p>Trendyol, Hepsiburada, Akakçe ve Cimri'deki Derimod ürün sayfalarında malzeme, kalıp ve kullanım bilgileri eksiksiz verilmelidir. Bu sayfalar markalı sorularda derimod.com.tr'den sonra en çok okunan kaynaklardır.</p><p class="why">Dayanak: Trendyol 914 citation, bunların 725'i Derimod'un anıldığı cevaplarda (9. bölüm).</p></div></div>
+    <div class="action"><div><span class="sev p2">Yüksek</span></div><div><h4>Editoryal ve liste sitelerinde yer alınmalıdır</h4><p>Vogue, Hürriyet ve Milliyet gibi moda ve haber sitelerinde, ayrıca "en iyi deri ayakkabı markaları" türünde liste yayınlayan sitelerde (ortopedikterlik.com, bestyle.com.tr, ayakkabirehberi.com gibi) PR ve advertorial çalışmasıyla Derimod'un yer alması sağlanmalıdır.</p><p class="why">Dayanak: modeller markasız öneri listelerini hazırlarken bu içeriklerden yararlanmaktadır (9. bölüm).</p></div></div>
+    <div class="action"><div><span class="sev p3">Orta</span></div><div><h4>Topluluk platformlarında şeffaf marka varlığı oluşturulmalıdır</h4><p>YouTube'da ürün bakımı ve kombin videoları yayınlanmalı; Reddit, Ekşi Sözlük ve Kızlarsoruyor'da resmi marka hesabıyla, markayı temsil ettiği açıkça belirtilerek sorulara cevap verilmelidir.</p><p class="why">Dayanak: bu platformlar citation'ların %2'sini oluşturur; Instagram, Reddit ve Ekşi Sözlük, AI Overview'da Derimod'un geçmediği markasız sorularda da kaynak gösterilmektedir.</p></div></div>
+  </div>
+</section>
+
+<footer class="foot">
+  <img src="data:image/png;base64,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" alt="Inbound">
+  <h3>Derimod · AI görünürlük raporu</h3>
+  <p>Bu rapor, 30 Ağustos - 29 Eylül 2026 döneminde ChatGPT, Gemini ve Google AI Overview cevaplarının tam metin analiziyle hazırlanmıştır.</p>
+  <small>Derimod · AI Görünürlük Raporu · Eylül 2026 · Inbound</small>
+</footer>
+
+</div>
